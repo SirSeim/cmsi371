@@ -21,7 +21,6 @@
 
 
         var panelHeight = ((BOX_HEIGHT - (BOX_BORDER * 2)) - (5 * DOOR_PANEL_BORDER)) / 4;
-        var  
 
         renderingContext.fillStyle = '#002F58';
         renderingContext.beginPath();
@@ -85,7 +84,7 @@
 
     SpriteLibrary.tardis = function(tardisSpecification) {
         var renderingContext = tardisSpecification.renderingContext;
-        var decimalDoorOpen = tardisSpecification.decimalDoorOpen || 0.3;
+        var decimalDoorOpen = tardisSpecification.decimalDoorOpen || 0.0;
 
         renderingContext.save();
         renderingContext.translate(-BOX_WIDTH / 2, LIGHT_HEIGHT);

@@ -19,6 +19,8 @@
       (function() {
         var renderingContext = $("#canvas")[0].getContext("2d");
 
+        var doorOpen = 0.0;
+
         var renderScene = function () {
 
           renderingContext.fillStyle = "white";
@@ -28,9 +30,13 @@
           renderingContext.translate(300, 50);
           renderingContext.scale(2, 2);
           SpriteLibrary.tardis({
-            renderingContext: renderingContext
+            renderingContext: renderingContext,
+            decimalDoorOpen: doorOpen
           });
           renderingContext.restore();
+
+          doorOpen += 0.01;
+          if (doorOpen > 1) { doorOpen = 0; }
 
           window.requestAnimationFrame(renderScene);
 
