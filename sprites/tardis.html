@@ -20,6 +20,7 @@
         var renderingContext = $("#canvas")[0].getContext("2d");
 
         var doorOpen = 0.0;
+        var isOpening = true;
 
         var renderScene = function () {
 
@@ -28,15 +29,28 @@
 
           renderingContext.save();
           renderingContext.translate(300, 50);
-          renderingContext.scale(2, 2);
+          renderingContext.scale(2.2, 2.2);
           SpriteLibrary.tardis({
             renderingContext: renderingContext,
             decimalDoorOpen: doorOpen
           });
           renderingContext.restore();
 
-          doorOpen += 0.01;
-          if (doorOpen > 1) { doorOpen = 0; }
+          if (isOpening) {
+            doorOpen += 0.01;
+          } else {
+            doorOpen -= 0.01;
+          }
+
+          if (doorOpen > 1) {
+            doorOpen = 1;
+            isOpening = false;
+          }
+
+          if (doorOpen < 0) {
+            doorOpen = 0;
+            isOpening = true;
+          }
 
           window.requestAnimationFrame(renderScene);
 
