@@ -173,6 +173,14 @@
         var rightRearLegRotation = Specification.rightRearLegRotation || rightLegsRotation;
 
         renderingContext.save();
+        drawLeg(renderingContext, LEG_WIDTH/2, 0, rightFrontLegRotation);
+        renderingContext.restore();
+
+        renderingContext.save();
+        drawLeg(renderingContext, BUN_LENGTH + BUN_THICKNESS - LEG_WIDTH/2, 0, rightRearLegRotation);
+        renderingContext.restore();
+
+        renderingContext.save();
         drawHead(renderingContext, headRotation);
         renderingContext.restore();
 
@@ -186,15 +194,7 @@
         renderingContext.restore();
 
         renderingContext.save();
-        drawLeg(renderingContext, LEG_WIDTH/2, 0, rightFrontLegRotation);
-        renderingContext.restore();
-
-        renderingContext.save();
-        drawLeg(renderingContext, BUN_LENGTH + BUN_THICKNESS - LEG_WIDTH/2, 0, leftFrontLegRotation);
-        renderingContext.restore();
-
-        renderingContext.save();
-        drawLeg(renderingContext, BUN_LENGTH + BUN_THICKNESS - LEG_WIDTH/2, 0, rightFrontLegRotation);
+        drawLeg(renderingContext, BUN_LENGTH + BUN_THICKNESS - LEG_WIDTH/2, 0, leftRearLegRotation);
         renderingContext.restore();
 
         renderingContext.save();
