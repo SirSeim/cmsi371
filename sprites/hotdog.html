@@ -19,18 +19,94 @@
       (function() {
         var renderingContext = $("#canvas")[0].getContext("2d");
 
+        var headRotation = 0;
+        var headGoingDown = true;
+        var headRotationMax = 0.1 * Math.PI;
+
+        var tailRotation = 0;
+        var tailGoingDown = true;
+        var tailRotationMax = 0.1 * Math.PI;
+
+        var leftLegsRotation = 0.3 * Math.PI;
+        var leftLegGoingForward = true;
+        var rightLegsRotation = 0;
+        var rightLegGoingForward = true;
+        var legRotationMax = 0.4 * Math.PI;
+
+        var headRotationDelta = 0.01 * Math.PI;
+        var tailRotationDelta = 0.01 * Math.PI;
+        var legRotationDelta = 0.03 * Math.PI;
+
         var renderScene = function () {
 
           renderingContext.fillStyle = "white";
           renderingContext.fillRect(0, 0, 1023, 511);
 
           renderingContext.save();
-          renderingContext.translate(300, 50);
-          renderingContext.scale(1, 1);
+          renderingContext.translate(300, 100);
+          renderingContext.scale(2, 2);
           SpriteLibrary.hotdog({
-            renderingContext: renderingContext
+            renderingContext: renderingContext,
+            headRotation: headRotation,
+            tailRotation: tailRotation,
+            leftLegsRotation: leftLegsRotation,
+            rightLegsRotation: rightLegsRotation
           });
           renderingContext.restore();
+
+          if (headGoingDown) {
+            headRotation -= headRotationDelta;
+          } else {
+            headRotation += headRotationDelta;
+          }
+
+          if (headRotation < -headRotationMax) {
+            headGoingDown = false;
+            headRotation = -headRotationMax;
+          }
+          if (headRotation > headRotationMax) {
+            headGoingDown = true;
+            headRotation = headRotationMax;
+          }
+
+          if (tailGoingDown) {
+            tailRotation -= tailRotationDelta;
+          } else {
+            tailRotation += tailRotationDelta;
+          }
+
+          if (tailRotation < -tailRotationMax) {
+            tailGoingDown = false;
+            tailRotation = -tailRotationMax;
+          }
+          if (tailRotation > tailRotationMax) {
+            tailGoingDown = true;
+            tailRotation = tailRotationMax;
+          }
+
+          if (leftLegGoingForward) {
+            leftLegsRotation += legRotationDelta;
+          } else {
+            leftLegsRotation -= legRotationDelta;
+          }
+          if (rightLegGoingForward) {
+            rightLegsRotation += legRotationDelta;
+          } else {
+            rightLegsRotation -= legRotationDelta;
+          }
+
+          if (leftLegsRotation < -legRotationMax) {
+            leftLegGoingForward = true;
+          }
+          if (leftLegsRotation > legRotationMax) {
+            leftLegGoingForward = false;
+          }
+          if (rightLegsRotation < -legRotationMax) {
+            rightLegGoingForward = true;
+          }
+          if (rightLegsRotation > legRotationMax) {
+            rightLegGoingForward = false;
+          }
 
           window.requestAnimationFrame(renderScene);
 
