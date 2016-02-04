@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Canvas BB-8</title>
+  </head>
+
+  <body>
+    <!-- No further elements here; strictly minimalist. But of course you may resize your canvas as needed. -->
+    <canvas id="canvas" width="1024" height="512">
+      Sorry, but you need a web browser that supports the
+      <code>canvas</code> element.
+    </canvas>
+    <!-- Let's add jQuery, even if you might not always use it. -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="bb8.js"></script>
+    <script>
+      (function() {
+        var renderingContext = $("#canvas")[0].getContext("2d");
+
+        var headRotation = 0;
+        var headGoingLeft = true;
+        var MAX_HEAD_ROTATION = .3 * Math.PI;
+        var HEAD_ROTATION_DELTA = .01 * Math.PI;
+        var BODY_ROTATION_DELTA = .05 * Math.PI;
+
+        var bodyRotation = 0;
+
+        var renderScene = function () {
+
+          renderingContext.fillStyle = "white";
+          renderingContext.fillRect(0, 0, 1023, 511);
+
+          renderingContext.save();
+          renderingContext.translate(300, 50);
+          renderingContext.scale(2, 2);
+          SpriteLibrary.bb8({
+            renderingContext: renderingContext,
+            headRotation: headRotation,
+            bodyRotation: bodyRotation
+          });
+          renderingContext.restore();
+
+          if (headGoingLeft) {
+            headRotation -= HEAD_ROTATION_DELTA;
+            if (headRotation < -MAX_HEAD_ROTATION) {
+              headRotation = -MAX_HEAD_ROTATION;
+              headGoingLeft = false;
+            }
+          } else {
+            headRotation += HEAD_ROTATION_DELTA;
+            if (headRotation > MAX_HEAD_ROTATION) {
+              headRotation = MAX_HEAD_ROTATION;
+              headGoingLeft = true;
+            }
+          }
+
+          bodyRotation += BODY_ROTATION_DELTA;
+
+          window.requestAnimationFrame(renderScene);
+
+        };
+
+        window.requestAnimationFrame(renderScene);
+
+      }());
+
+    </script>
+  </body>
+
+</html>
