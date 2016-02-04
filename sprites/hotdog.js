@@ -4,11 +4,17 @@
     var BUN_THICKNESS = 30;
     var BUN_LENGTH = 50;
     var BUN_COLOR = '#C09569';
+
     var HOTDOG_THICKNESS = 20;
     var HOTDOG_LENGTH = 80;
     var HOTDOG_OFFSET_X = -5;
     var HOTDOG_OFFSET_Y = -10;
     var HOTDOG_COLOR = '#AF3D3D';
+
+    var NECK_ANGLE = 0.2;
+    var NECK_LENGTH = 30;
+    var NECK_WIDTH = 10;
+    var NECK_COLOR = '#422910';
 
     var drawCircle = function(renderingContext, color, radius) {
         renderingContext.save();
@@ -71,8 +77,14 @@
         renderingContext.restore();
     };
 
-    var drawHead = function(renderingContext) {
+    var drawHead = function(renderingContext, headRotation) {
         renderingContext.save();
+        renderingContext.rotate(headRotation);
+
+        renderingContext.save();
+        renderingContext.rotate(NECK_ANGLE);
+        drawRect(renderingContext, 0, -NECK_WIDTH, NECK_COLOR, NECK_LENGTH, NECK_WIDTH);
+        renderingContext.restore();
 
         renderingContext.restore();
     };
