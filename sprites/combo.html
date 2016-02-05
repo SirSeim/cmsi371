@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Canvas Combo</title>
+  </head>
+
+  <body>
+    <!-- No further elements here; strictly minimalist. But of course you may resize your canvas as needed. -->
+    <canvas id="canvas" width="1024" height="512">
+      Sorry, but you need a web browser that supports the
+      <code>canvas</code> element.
+    </canvas>
+    <!-- Let's add jQuery, even if you might not always use it. -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="hotdog.js"></script>
+    <script src="tardis.js"></script>
+    <script src="bb8.js"></script>
+    <script>
+      (function() {
+        var renderingContext = $("#canvas")[0].getContext("2d");
+
+        var hotdogHeadRotation = 0;
+        var hotdogHeadGoingDown = true;
+        var hotdogHeadRotationMax = 0.1 * Math.PI;
+
+        var hotdogTailRotation = 0;
+        var hotdogTailGoingDown = true;
+        var hotdogTailRotationMax = 0.1 * Math.PI;
+
+        var hotdogLeftLegsRotation = 0.4 * Math.PI;
+        var hotdogLeftLegGoingForward = true;
+        var hotdogRightLegsRotation = 0;
+        var hotdogRightLegGoingForward = true;
+        var hotdogLegRotationMax = 0.4 * Math.PI;
+
+        var hotdogHeadRotationDelta = 0.01 * Math.PI;
+        var hotdogTailRotationDelta = 0.01 * Math.PI;
+        var hotdogLegRotationDelta = 0.03 * Math.PI;
+
+
+        var tardisDoorOpen = 0.0;
+        var tardisIsOpening = true;
+
+
+        var bb8HeadRotation = 0;
+        var bb8HeadGoingLeft = true;
+        var bb8MaxHeadRotation = .3 * Math.PI;
+        var bb8HeadRotationDelta = .01 * Math.PI;
+        var bb8BodyRotationDelta = .05 * Math.PI;
+
+        var bb8BodyRotation = 0;
+
+        var renderScene = function () {
+
+          renderingContext.fillStyle = "white";
+          renderingContext.fillRect(0, 0, 1023, 511);
+
+          renderingContext.save();
+          renderingContext.translate(150, 50);
+          renderingContext.scale(2.2, 2.2);
+          SpriteLibrary.tardis({
+            renderingContext: renderingContext,
+            decimalDoorOpen: tardisDoorOpen
+          });
+          renderingContext.restore();
+
+          renderingContext.save();
+          renderingContext.translate(400, 400);
+          renderingContext.scale(2, 2);
+          SpriteLibrary.hotdog({
+            renderingContext: renderingContext,
+            headRotation: hotdogHeadRotation,
+            tailRotation: hotdogTailRotation,
+            leftLegsRotation: hotdogLeftLegsRotation,
+            rightLegsRotation: hotdogRightLegsRotation
+          });
+          renderingContext.restore();
+
+          renderingContext.save();
+          renderingContext.translate(800, 200);
+          renderingContext.scale(2, 2);
+          SpriteLibrary.bb8({
+            renderingContext: renderingContext,
+            headRotation: bb8HeadRotation,
+            bodyRotation: bb8BodyRotation
+          });
+          renderingContext.restore();
+
+          if (hotdogHeadGoingDown) {
+            hotdogHeadRotation -= hotdogHeadRotationDelta;
+          } else {
+            hotdogHeadRotation += hotdogHeadRotationDelta;
+          }
+
+          if (hotdogHeadRotation < -hotdogHeadRotationMax) {
+            hotdogHeadGoingDown = false;
+            hotdogHeadRotation = -hotdogHeadRotationMax;
+          }
+          if (hotdogHeadRotation > hotdogHeadRotationMax) {
+            hotdogHeadGoingDown = true;
+            hotdogHeadRotation = hotdogHeadRotationMax;
+          }
+
+          if (hotdogTailGoingDown) {
+            hotdogTailRotation -= hotdogTailRotationDelta;
+          } else {
+            hotdogTailRotation += hotdogTailRotationDelta;
+          }
+
+          if (hotdogTailRotation < -hotdogTailRotationMax) {
+            hotdogTailGoingDown = false;
+            hotdogTailRotation = -hotdogTailRotationMax;
+          }
+          if (hotdogTailRotation > hotdogTailRotationMax) {
+            hotdogTailGoingDown = true;
+            hotdogTailRotation = hotdogTailRotationMax;
+          }
+
+          if (hotdogLeftLegGoingForward) {
+            hotdogLeftLegsRotation += hotdogLegRotationDelta;
+          } else {
+            hotdogLeftLegsRotation -= hotdogLegRotationDelta;
+          }
+          if (hotdogRightLegGoingForward) {
+            hotdogRightLegsRotation += hotdogLegRotationDelta;
+          } else {
+            hotdogRightLegsRotation -= hotdogLegRotationDelta;
+          }
+
+          if (hotdogLeftLegsRotation < -hotdogLegRotationMax) {
+            hotdogLeftLegGoingForward = true;
+          }
+          if (hotdogLeftLegsRotation > hotdogLegRotationMax) {
+            hotdogLeftLegGoingForward = false;
+          }
+          if (hotdogRightLegsRotation < -hotdogLegRotationMax) {
+            hotdogRightLegGoingForward = true;
+          }
+          if (hotdogRightLegsRotation > hotdogLegRotationMax) {
+            hotdogRightLegGoingForward = false;
+          }
+
+
+          if (tardisIsOpening) {
+            tardisDoorOpen += 0.01;
+          } else {
+            tardisDoorOpen -= 0.01;
+          }
+
+          if (tardisDoorOpen > 1) {
+            tardisDoorOpen = 1;
+            tardisIsOpening = false;
+          }
+
+          if (tardisDoorOpen < 0) {
+            tardisDoorOpen = 0;
+            tardisIsOpening = true;
+          }
+
+
+          if (bb8HeadGoingLeft) {
+            bb8HeadRotation -= bb8HeadRotationDelta;
+            if (bb8HeadRotation < -bb8MaxHeadRotation) {
+              bb8HeadRotation = -bb8MaxHeadRotation;
+              bb8HeadGoingLeft = false;
+            }
+          } else {
+            bb8HeadRotation += bb8HeadRotationDelta;
+            if (bb8HeadRotation > bb8MaxHeadRotation) {
+              bb8HeadRotation = bb8MaxHeadRotation;
+              bb8HeadGoingLeft = true;
+            }
+          }
+
+          bb8BodyRotation += bb8BodyRotationDelta;
+
+          window.requestAnimationFrame(renderScene);
+
+        };
+
+        window.requestAnimationFrame(renderScene);
+
+      }());
+
+    </script>
+  </body>
+
+</html>
