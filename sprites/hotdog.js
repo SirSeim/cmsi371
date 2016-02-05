@@ -46,7 +46,6 @@
         renderingContext.fillStyle = color;
         renderingContext.fillRect(0,0, width, height);
         renderingContext.restore();
-        console.log('her');
     };
 
     var drawHotDog = function(renderingContext) {
