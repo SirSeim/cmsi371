@@ -188,6 +188,11 @@
                     (distance / 2) * percentComplete * percentComplete + start :
                     (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
         },
+        inOutBack: function(currentTime, start, distance, duration) {
+            var ts = (currentTime/=duration) * currentTime;
+            var tc = ts * currentTime;
+            return start + distance * (0.2525*tc*ts + -0.7525*ts*ts + -3.7*tc + 6.4*ts + -1.2*currentTime);
+        },
 
         initialize: initializeAnimation
     };

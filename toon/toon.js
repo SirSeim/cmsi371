@@ -93,6 +93,43 @@
                     rotate: 60 // Keyframe.rotate uses degrees.
                 }
             ]
+        },
+        {
+            draw: bb8,
+            keyframes: [
+                {
+                    frame: 0,
+                    tx: 150,
+                    ty: 50,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: -.3 * Math.PI
+                        },
+                        {
+                            name: "bodyRotation",
+                            value: 0
+                        }
+                    ],
+                    ease: KeyframeTweener.custom1
+                },
+                {
+                    frame: 100,
+                    tx: 400,
+                    ty: 50,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: .3 * Math.PI
+                        },
+                        {
+                            name: "bodyRotation",
+                            value: 0
+                        }
+                    ],
+                    ease: KeyframeTweener.custom1
+                }
+            ]
         }
     ];
 
