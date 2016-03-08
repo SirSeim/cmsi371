@@ -108,8 +108,47 @@
                             ease(currentTweenFrame, syStart, syDistance, duration)
                         );
 
+                        var specifications = {
+                            renderingContext: renderingContext
+                        };
+
+                        var addSpecification = function(specifications, startElement, endElement) {
+                            if (endElement === null) {
+                                specifications[startElement.name] = startElement.value;
+                            } else {
+                                var valueStart = startElement.value;
+                                var valueDistance = endElement.value - valueStart;
+                                specifications[startElement.name] = ease(currentTweenFrame, valueStart, valueDistance, duration);
+                            }
+                        };
+
+                        if (startKeyframe.parameters) {
+                            startKeyframe.parameters.forEach(function (startElement) {
+                                if (endKeyframe.parameters) {
+                                    var isFound = false;
+                                    var endElement;
+                                    endKeyframe.parameters.forEach(function (element) {
+                                        if (element.name === startElement.name) {
+                                            isFound = true;
+                                            endElement = element;
+                                        }
+                                    });
+
+                                    if (isFound) {
+                                        addSpecification(specifications, startElement, endElement);
+                                    } else {
+                                        addSpecification(specifications, startElement);
+                                    }
+                                } else {
+                                    addSpecification(specifications, startElement);
+                                }
+                            });
+                        }
+
+                        console.log(specifications);
+
                         // Draw the sprite.
-                        sprites[i].draw(renderingContext);
+                        sprites[i].draw(specifications);
 
                         // Clean up.
                         renderingContext.restore();
