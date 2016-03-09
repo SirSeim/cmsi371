@@ -89,6 +89,9 @@
                         var syStart = startKeyframe.sy || 1;
                         var syDistance = (endKeyframe.sy || 1) - syStart;
 
+                        var aStart = startKeyframe.a || 1;
+                        var aDistance = (endKeyframe.a || 1) - aStart;
+
                         var rotateStart = (startKeyframe.rotate || 0) * Math.PI / 180;
                         var rotateDistance = (endKeyframe.rotate || 0) * Math.PI / 180 - rotateStart;
 
@@ -107,6 +110,7 @@
                             ease(currentTweenFrame, sxStart, sxDistance, duration),
                             ease(currentTweenFrame, syStart, syDistance, duration)
                         );
+                        renderingContext.globalAlpha = ease(currentTweenFrame, aStart, aDistance, duration);
 
                         var specifications = {
                             renderingContext: renderingContext
@@ -145,7 +149,7 @@
                             });
                         }
 
-                        console.log(specifications);
+                        // console.log(specifications);
 
                         // Draw the sprite.
                         sprites[i].draw(specifications);
@@ -193,6 +197,17 @@
             var tc = ts * currentTime;
             return start + distance * (0.2525*tc*ts + -0.7525*ts*ts + -3.7*tc + 6.4*ts + -1.2*currentTime);
         },
+        outBounce: function (currentTime, start, distance, duration) {
+        if ((currentTime /= duration) < (1/2.75)) {
+            return distance * (7.5625 * currentTime * currentTime) + start;
+        } else if (currentTime < (2/2.75)) {
+            return distance * (7.5625 * (currentTime -= (1.5/2.75)) * currentTime + .75) + start;
+        } else if (currentTime < (2.5/2.75)) {
+            return distance * (7.5625 * (currentTime -= (2.25/2.75)) * currentTime + .9375) + start;
+        } else {
+            return distance * (7.5625 * (currentTime -= (2.625/2.75)) * currentTime + .984375) + start;
+        }
+    },
 
         initialize: initializeAnimation
     };
