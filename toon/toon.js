@@ -104,6 +104,22 @@
                     parameters: [
                         {
                             name: "headRotation",
+                            value: -.1 * Math.PI
+                        },
+                        {
+                            name: "bodyRotation",
+                            value: 0
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseIn
+                },
+                {
+                    frame: 20,
+                    tx: 150,
+                    ty: 50,
+                    parameters: [
+                        {
+                            name: "headRotation",
                             value: -.3 * Math.PI
                         },
                         {
@@ -111,11 +127,11 @@
                             value: 0
                         }
                     ],
-                    ease: KeyframeTweener.custom1
+                    ease: KeyframeTweener.inOutBack
                 },
                 {
-                    frame: 100,
-                    tx: 400,
+                    frame: 120,
+                    tx: 550,
                     ty: 50,
                     parameters: [
                         {
@@ -124,10 +140,10 @@
                         },
                         {
                             name: "bodyRotation",
-                            value: 0
+                            value: 20
                         }
                     ],
-                    ease: KeyframeTweener.custom1
+                    ease: KeyframeTweener.inOutBack
                 }
             ]
         }
