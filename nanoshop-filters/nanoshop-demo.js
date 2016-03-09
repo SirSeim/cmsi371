@@ -29,7 +29,6 @@ $(function () {
 
         renderingContext.save();
         renderingContext.translate(500, 570);
-        // renderingContext.scale(2, 2);
         SpriteLibrary.bb8({
             renderingContext: renderingContext,
             headRotation: .2 * Math.PI,
@@ -48,7 +47,16 @@ $(function () {
             rightLegsRotation: .1 * Math.PI
         });
         renderingContext.restore();
+
+        if (neighborFiltered) {
+            filterNeighbor();
+        }
+
+        if (nanoFiltered) {
+            filterNano();
+        }
     };
+
 
     var nanoFiltered = false;
     var filterNano = function () {
@@ -65,16 +73,14 @@ $(function () {
         if (nanoFiltered) {
             nanoFiltered = false;
             drawScene();
-            if (neighborFiltered) {
-                filterNeighbor();
-            }
             $(this).html("Apply NanoShop");
         } else {
             nanoFiltered = true;
-            filterNano();
+            drawScene();
             $(this).html("Remove NanoShop");
         }
     });
+
 
     var neighborFiltered = false;
     var filterNeighbor = function () {
@@ -92,16 +98,10 @@ $(function () {
         if (neighborFiltered) {
             neighborFiltered = false;
             drawScene();
-            if (nanoFiltered) {
-                filterNano();
-            }
             $(this).html("Apply NanoShop Neighborhood");
         } else {
             neighborFiltered = true;
-            filterNeighbor();
-            if (nanoFiltered) {
-                filterNano();
-            }
+            drawScene();
             $(this).html("Remove NanoShop Neighborhood");
         }
     });
