@@ -94,7 +94,7 @@
                     ]
                 },
                 {
-                    frame: 200,
+                    frame: 300,
                     tx: 300,
                     ty: 250,
                     sx: 2,
@@ -115,7 +115,7 @@
                     frame: 100,
                     tx: 300,
                     ty: 450,
-                    a: 0.7,
+                    a: 0.8,
                     sx: 0.3,
                     sy: 0.3,
                     parameters: [
@@ -199,6 +199,22 @@
                 },
                 {
                     frame: 280,
+                    tx: 800,
+                    ty: 570,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0
+                        },
+                        {
+                            name: "bodyRotation",
+                            value: 20
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseOut
+                },
+                {
+                    frame: 300,
                     tx: 800,
                     ty: 570,
                     parameters: [
