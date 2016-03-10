@@ -198,16 +198,16 @@
             return start + distance * (0.2525*tc*ts + -0.7525*ts*ts + -3.7*tc + 6.4*ts + -1.2*currentTime);
         },
         outBounce: function (currentTime, start, distance, duration) {
-        if ((currentTime /= duration) < (1/2.75)) {
-            return distance * (7.5625 * currentTime * currentTime) + start;
-        } else if (currentTime < (2/2.75)) {
-            return distance * (7.5625 * (currentTime -= (1.5/2.75)) * currentTime + .75) + start;
-        } else if (currentTime < (2.5/2.75)) {
-            return distance * (7.5625 * (currentTime -= (2.25/2.75)) * currentTime + .9375) + start;
-        } else {
-            return distance * (7.5625 * (currentTime -= (2.625/2.75)) * currentTime + .984375) + start;
-        }
-    },
+            if ((currentTime /= duration) < (1/2.75)) {
+                return distance * (7.5625 * currentTime * currentTime) + start;
+            } else if (currentTime < (2/2.75)) {
+                return distance * (7.5625 * (currentTime -= (1.5/2.75)) * currentTime + .75) + start;
+            } else if (currentTime < (2.5/2.75)) {
+                return distance * (7.5625 * (currentTime -= (2.25/2.75)) * currentTime + .9375) + start;
+            } else {
+                return distance * (7.5625 * (currentTime -= (2.625/2.75)) * currentTime + .984375) + start;
+            }
+        },
 
         initialize: initializeAnimation
     };
