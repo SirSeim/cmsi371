@@ -271,8 +271,8 @@ var Primitives = {
         var module = this;
         var i;
         var j;
-        var bottom = y + r;
-        var right = x + r;
+        var bottom = 2 * r;
+        var right = 2 * r;
         var leftColor = c1 ? [c1[0], c1[1], c1[2]] : c1;
         var rightColor = c2 ? [c2[0], c2[1], c2[2]] : c2;
         var leftVDelta;
@@ -293,10 +293,10 @@ var Primitives = {
         var fillCircleNoColor = function () {
             // The rendering context will just ignore the
             // undefined colors in this case.
-            for (i = y-r; i < bottom; i += 1) {
-                for (j = x-r; j < right; j += 1) {
+            for (i = 0; i < bottom; i += 1) {
+                for (j = -right; j < right; j += 1) {
                     if (dict[i][0] <= j && dict[i][1] >= j) {
-                        module.setPixel(context, j, i);
+                        module.setPixel(context, j+x, i+(y-r));
                     }
                 }
             }
@@ -304,19 +304,21 @@ var Primitives = {
 
         var fillCircleOneColor = function () {
             // Single color all the way through.
-            for (i = y-r; i < bottom; i += 1) {
-                for (j = x-r; j < right; j += 1) {
-                    module.setPixel(context, j, i, c1[0], c1[1], c1[2]);
+            for (i = 0; i < bottom; i += 1) {
+                for (j = -right; j < right; j += 1) {
+                    if (dict[i][0] <= j && dict[i][1] >= j) {
+                        module.setPixel(context, j+x, i+(y-r), c1[0], c1[1], c1[2]);
+                    }
                 }
             }
         };
 
         var fillCircleTwoColors = function () {
             // This modifies the color vertically only.
-            for (i = y-r; i < bottom; i += 1) {
-                for (j = x-r; j < right; j += 1) {
+            for (i = 0; i < bottom; i += 1) {
+                for (j = -right; j < right; j += 1) {
                     if (dict[i][0] <= j && dict[i][1] >= j) {
-                        module.setPixel(context, j, i,
+                        module.setPixel(context, j+x, i+(y-r),
                                 leftColor[0],
                                 leftColor[1],
                                 leftColor[2]);
@@ -330,16 +332,16 @@ var Primitives = {
             }
         };
         var fillCircleFourColors = function () {
-            for (i = y-r; i < bottom; i += 1) {
+            for (i = 0; i < bottom; i += 1) {
                 // Move to the next "vertical" color level.
                 currentColor = [leftColor[0], leftColor[1], leftColor[2]];
-                hDelta = [(rightColor[0] - leftColor[0]) / w,
-                          (rightColor[1] - leftColor[1]) / w,
-                          (rightColor[2] - leftColor[2]) / w];
+                hDelta = [(rightColor[0] - leftColor[0]) / right,
+                          (rightColor[1] - leftColor[1]) / right,
+                          (rightColor[2] - leftColor[2]) / right];
 
-                for (j = x-r; j < right; j += 1) {
+                for (j = -right; j < right; j += 1) {
                     if (dict[i][0] <= j && dict[i][1] >= j) {
-                        module.setPixel(context, j, i,
+                        module.setPixel(context, j+x, i+(y-r),
                                 currentColor[0],
                                 currentColor[1],
                                 currentColor[2]);
@@ -370,9 +372,9 @@ var Primitives = {
             fillCircleOneColor();
         } else if (!c3) {
             // For this case, we set up the left vertical deltas.
-            leftVDelta = [(c2[0] - c1[0]) / h,
-                      (c2[1] - c1[1]) / h,
-                      (c2[2] - c1[2]) / h];
+            leftVDelta = [(c2[0] - c1[0]) / bottom,
+                      (c2[1] - c1[1]) / bottom,
+                      (c2[2] - c1[2]) / bottom];
             fillCircleTwoColors();
         } else {
             // The four-color case, with a quick assignment in case
@@ -384,12 +386,12 @@ var Primitives = {
             // often than function calls, because this is the rare
             // situation where function call overhead costs more
             // than repeated code.
-            leftVDelta = [(c3[0] - c1[0]) / h,
-                      (c3[1] - c1[1]) / h,
-                      (c3[2] - c1[2]) / h];
-            rightVDelta = [(c4[0] - c2[0]) / h,
-                      (c4[1] - c2[1]) / h,
-                      (c4[2] - c2[2]) / h];
+            leftVDelta = [(c3[0] - c1[0]) / bottom,
+                      (c3[1] - c1[1]) / bottom,
+                      (c3[2] - c1[2]) / bottom];
+            rightVDelta = [(c4[0] - c2[0]) / bottom,
+                      (c4[1] - c2[1]) / bottom,
+                      (c4[2] - c2[2]) / bottom];
             fillCircleFourColors();
         }
     },
@@ -405,12 +407,18 @@ var Primitives = {
         // We compute the first octant, from zero to pi/4.
         var x = r;
         var y = 0;
+        var dict = {};
 
         while (x >= y) {
             // this.fillCircle(context, xc, yc, r, dict, c1, c2, c3, c4);
+            dict[r-Math.round(y)] = [-x, x];
+            dict[r-Math.round(x)] = [-y, y];
+            dict[r+Math.round(x)] = [-y, y];
+            dict[r+Math.round(y)] = [-x, x];
             x = x * c - y * s;
             y = x * s + y * c;
         }
+        // console.log(dict);
         this.fillCircle(context, xc, yc, r, dict, c1, c2, c3, c4);
     },
 
@@ -419,12 +427,19 @@ var Primitives = {
         var epsilon = 1 / r;
         var x = r;
         var y = 0;
+        var dict = {};
 
         while (x >= y) {
             // this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            dict[r-Math.round(y)] = [-x, x];
+            dict[r-Math.round(x)] = [-y, y];
+            dict[r+Math.round(x)] = [-y, y];
+            dict[r+Math.round(y)] = [-x, x];
+            console.log("" + x + " " + y);
             x = x - (epsilon * y);
             y = y + (epsilon * x);
         }
+        console.log(dict);
         this.fillCircle(context, xc, yc, r, dict, c1, c2, c3, c4);
     },
 
@@ -433,9 +448,14 @@ var Primitives = {
         var p = 3 - 2 * r;
         var x = 0;
         var y = r;
+        var dict = {};
 
         while (x < y) {
             // this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            dict[r-Math.round(y)] = [-x, x];
+            dict[r-Math.round(x)] = [-y, y];
+            dict[r+Math.round(x)] = [-y, y];
+            dict[r+Math.round(y)] = [-x, x];
             if (p < 0) {
                 p = p + 4 * x + 6;
             } else {
@@ -446,6 +466,10 @@ var Primitives = {
         }
         if (x === y) {
             // this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            dict[r-Math.round(y)] = [-x, x];
+            dict[r-Math.round(x)] = [-y, y];
+            dict[r+Math.round(x)] = [-y, y];
+            dict[r+Math.round(y)] = [-x, x];
         }
         this.fillCircle(context, xc, yc, r, dict, c1, c2, c3, c4);
     },
@@ -457,9 +481,14 @@ var Primitives = {
         var e = 1 - r;
         var u = 1;
         var v = e - r;
+        var dict = {};
 
         while (x <= y) {
-            this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            // this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            dict[r-Math.round(y)] = [-x, x];
+            dict[r-Math.round(x)] = [-y, y];
+            dict[r+Math.round(x)] = [-y, y];
+            dict[r+Math.round(y)] = [-x, x];
             if (e < 0) {
                 x += 1;
                 u += 2;
@@ -483,9 +512,14 @@ var Primitives = {
         var x = r;
         var y = 0;
         var e = 0;
+        var dict = {};
 
         while (y <= x) {
-            this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            // this.fillCircle(context, xc, yc, x, y, c1, c2, c3, c4);
+            dict[r-Math.round(y)] = [-x, x];
+            dict[r-Math.round(x)] = [-y, y];
+            dict[r+Math.round(x)] = [-y, y];
+            dict[r+Math.round(y)] = [-x, x];
             y += 1;
             e += (2 * y - 1);
             if (e > x) {
