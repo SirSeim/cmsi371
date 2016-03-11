@@ -36,6 +36,31 @@ var NanoshopNeighborhood = {
         return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
     },
 
+    fromTopRight: function (x, y, rgbaNeighborhood) {
+        return [
+            rgbaNeighborhood[0].r,
+            rgbaNeighborhood[0].g,
+            rgbaNeighborhood[0].b,
+            rgbaNeighborhood[0].a
+        ];
+    },
+
+    mixTop: function (x, y, rgbaNeighborhood) {
+        var rTop = 0;
+        var gTop = 0;
+        var bTop = 0;
+        var aTop = 0;
+
+        for (var i = 0; i < 3; i++) {
+            rTop += rgbaNeighborhood[i].r;
+            gTop += rgbaNeighborhood[i].g;
+            bTop += rgbaNeighborhood[i].b;
+            aTop += rgbaNeighborhood[i].a;
+        }
+
+        return [ rTop / 3, gTop / 3, bTop / 3, aTop / 3];
+    },
+
     /*
      * This is a rudimentary edge dector---another filter that would not be possible
      * without knowing about the other pixels in our neighborhood.

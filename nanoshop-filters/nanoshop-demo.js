@@ -48,18 +48,26 @@ $(function () {
         });
         renderingContext.restore();
 
-        if (neighborFiltered) {
-            filterNeighbor();
+        if (makeEdge) {
+            edge();
         }
 
-        if (nanoFiltered) {
-            filterNano();
+        if (makeTopRight) {
+            topRight();
+        }
+
+        if (makeDarker) {
+            darken();
+        }
+
+        if (makeLessBlue) {
+            lessBlue();
         }
     };
 
 
-    var nanoFiltered = false;
-    var filterNano = function () {
+    var makeDarker = false;
+    var darken = function () {
         renderingContext.putImageData(
             Nanoshop.applyFilter(
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
@@ -69,21 +77,43 @@ $(function () {
         );
     };
     // Set a little event handler to apply the filter.
-    $("#apply-nanoshop-button").click(function () {
-        if (nanoFiltered) {
-            nanoFiltered = false;
+    $("#apply-darkener").click(function () {
+        if (makeDarker) {
+            makeDarker = false;
             drawScene();
-            $(this).html("Apply NanoShop");
+            $(this).html("Apply Darkener");
         } else {
-            nanoFiltered = true;
+            makeDarker = true;
             drawScene();
-            $(this).html("Remove NanoShop");
+            $(this).html("Remove Darkener");
+        }
+    });
+
+    var makeLessBlue = false;
+    var lessBlue = function () {
+        renderingContext.putImageData(
+            Nanoshop.applyFilter(
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                Nanoshop.lessBlue
+            ),
+            0, 0
+        );
+    };
+    $("#apply-less-blue").click(function () {
+        if (makeLessBlue) {
+            makeLessBlue = false;
+            drawScene();
+            $(this).html("Apply Less Blue");
+        } else {
+            makeLessBlue = true;
+            drawScene();
+            $(this).html("Remove Less Blue");
         }
     });
 
 
-    var neighborFiltered = false;
-    var filterNeighbor = function () {
+    var makeEdge = false;
+    var edge = function () {
         renderingContext.putImageData(
             NanoshopNeighborhood.applyFilter(
                 renderingContext,
@@ -94,15 +124,39 @@ $(function () {
             0, 0
         );
     };
-    $("#apply-neighborhood-button").click(function () {
-        if (neighborFiltered) {
-            neighborFiltered = false;
+    $("#apply-edge").click(function () {
+        if (makeEdge) {
+            makeEdge = false;
             drawScene();
-            $(this).html("Apply NanoShop Neighborhood");
+            $(this).html("Apply Edge");
         } else {
-            neighborFiltered = true;
+            makeEdge = true;
             drawScene();
-            $(this).html("Remove NanoShop Neighborhood");
+            $(this).html("Remove Edge");
+        }
+    });
+
+    var makeTopRight = false;
+    var topRight = function () {
+        renderingContext.putImageData(
+            NanoshopNeighborhood.applyFilter(
+                renderingContext,
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                NanoshopNeighborhood.fromTopRight
+                //NanoshopNeighborhood.averager // Convenience comment for easy switching.
+            ),
+            0, 0
+        );
+    };
+    $("#apply-top-right").click(function () {
+        if (makeTopRight) {
+            makeTopRight = false;
+            drawScene();
+            $(this).html("Apply Top Right");
+        } else {
+            makeTopRight = true;
+            drawScene();
+            $(this).html("Remove Top Right");
         }
     });
 
