@@ -335,9 +335,9 @@ var Primitives = {
             for (i = 0; i < bottom; i += 1) {
                 // Move to the next "vertical" color level.
                 currentColor = [leftColor[0], leftColor[1], leftColor[2]];
-                hDelta = [(rightColor[0] - leftColor[0]) / right,
-                          (rightColor[1] - leftColor[1]) / right,
-                          (rightColor[2] - leftColor[2]) / right];
+                hDelta = [(rightColor[0] - leftColor[0]) / (right*2),
+                          (rightColor[1] - leftColor[1]) / (right*2),
+                          (rightColor[2] - leftColor[2]) / (right*2)];
 
                 for (j = -right; j < right; j += 1) {
                     if (dict[i][0] <= j && dict[i][1] >= j) {
