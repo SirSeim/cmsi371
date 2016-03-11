@@ -236,49 +236,50 @@
             keyframes: [
                 {
                     frame: 0,
-                    tx: 20,
-                    ty: 20,
+                    tx: 40,
+                    ty: -40,
+                    rotate: 15,
                     parameters: [
                         {
                             name: "headRotation",
-                            value: 0
+                            value: -0.1 * Math.PI
                         },
                         {
                             name: "tailRotation",
-                            value: 0
+                            value: -0.1 * Math.PI
                         },
                         {
                             name: "leftLegsRotation",
-                            value: 0
+                            value: 0.4 * Math.PI
                         },
                         {
                             name: "rightLegsRotation",
-                            value: 0
+                            value: -0.2 * Math.PI
                         }
                     ],
-                    ease: KeyframeTweener.quadEaseInOut
+                    ease: KeyframeTweener.quadEaseIn
                 },
 
                 {
-                    frame: 30,
-                    tx: 100,
-                    ty: 50,
+                    frame: 80,
+                    tx: 90,
+                    ty: 700,
                     parameters: [
                         {
                             name: "headRotation",
-                            value: 5
+                            value: 0.1 * Math.PI
                         },
                         {
                             name: "tailRotation",
-                            value: 10
+                            value: 0.1 * Math.PI
                         },
                         {
                             name: "leftLegsRotation",
-                            value: 20
+                            value: -0.4 * Math.PI
                         },
                         {
                             name: "rightLegsRotation",
-                            value: 8
+                            value: 0
                         }
                     ],
                     ease: KeyframeTweener.quadEaseInOut
@@ -286,9 +287,252 @@
 
                 // The last keyframe does not need an easing function.
                 {
-                    frame: 80,
+                    frame: 90,
                     tx: 80,
-                    ty: 500,
+                    ty: 600,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0
+                        },
+                        {
+                            name: "tailRotation",
+                            value: 5
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: 3
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: 0
+                        }
+                    ],
+                    rotate: 60 // Keyframe.rotate uses degrees.
+                }
+            ]
+        },
+        {
+            draw: hotdog,
+            keyframes: [
+                {
+                    frame: 60,
+                    tx: 400,
+                    ty: -40,
+                    rotate: 15,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: -0.1 * Math.PI
+                        },
+                        {
+                            name: "tailRotation",
+                            value: -0.1 * Math.PI
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: 0.4 * Math.PI
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: -0.2 * Math.PI
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseIn
+                },
+
+                {
+                    frame: 150,
+                    tx: 490,
+                    ty: 700,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0.1 * Math.PI
+                        },
+                        {
+                            name: "tailRotation",
+                            value: 0.1 * Math.PI
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: -0.4 * Math.PI
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: 0
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseInOut
+                },
+
+                // The last keyframe does not need an easing function.
+                {
+                    frame: 160,
+                    tx: 480,
+                    ty: 600,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0
+                        },
+                        {
+                            name: "tailRotation",
+                            value: 5
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: 3
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: 0
+                        }
+                    ],
+                    rotate: 60 // Keyframe.rotate uses degrees.
+                }
+            ]
+        },
+        {
+            draw: hotdog,
+            keyframes: [
+                {
+                    frame: 30,
+                    tx: 200,
+                    ty: -40,
+                    rotate: 15,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: -0.1 * Math.PI
+                        },
+                        {
+                            name: "tailRotation",
+                            value: -0.1 * Math.PI
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: 0.4 * Math.PI
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: -0.2 * Math.PI
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseIn
+                },
+
+                {
+                    frame: 120,
+                    tx: 290,
+                    ty: 700,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0.1 * Math.PI
+                        },
+                        {
+                            name: "tailRotation",
+                            value: 0.1 * Math.PI
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: -0.4 * Math.PI
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: 0
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseInOut
+                },
+
+                // The last keyframe does not need an easing function.
+                {
+                    frame: 130,
+                    tx: 280,
+                    ty: 600,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0
+                        },
+                        {
+                            name: "tailRotation",
+                            value: 5
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: 3
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: 0
+                        }
+                    ],
+                    rotate: 60 // Keyframe.rotate uses degrees.
+                }
+            ]
+        },
+        {
+            draw: hotdog,
+            keyframes: [
+                {
+                    frame: 90,
+                    tx: 200,
+                    ty: -40,
+                    rotate: 15,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: -0.1 * Math.PI
+                        },
+                        {
+                            name: "tailRotation",
+                            value: -0.1 * Math.PI
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: 0.4 * Math.PI
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: -0.2 * Math.PI
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseIn
+                },
+
+                {
+                    frame: 180,
+                    tx: 290,
+                    ty: 700,
+                    parameters: [
+                        {
+                            name: "headRotation",
+                            value: 0.1 * Math.PI
+                        },
+                        {
+                            name: "tailRotation",
+                            value: 0.1 * Math.PI
+                        },
+                        {
+                            name: "leftLegsRotation",
+                            value: -0.4 * Math.PI
+                        },
+                        {
+                            name: "rightLegsRotation",
+                            value: 0
+                        }
+                    ],
+                    ease: KeyframeTweener.quadEaseInOut
+                },
+
+                // The last keyframe does not need an easing function.
+                {
+                    frame: 190,
+                    tx: 280,
+                    ty: 600,
                     parameters: [
                         {
                             name: "headRotation",
