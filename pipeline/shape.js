@@ -9,7 +9,7 @@
         this.indices = spec.indices;
     };
 
-    Shape.toRawTriangleArray = function () {
+    Shape.prototype.toRawTriangleArray = function () {
         var result = [],
             i,
             j,
@@ -29,7 +29,7 @@
         return result;
     };
 
-    Shape.toRawLineArray = function () {
+    Shape.prototype.toRawLineArray = function () {
         var result = [],
             i,
             j,

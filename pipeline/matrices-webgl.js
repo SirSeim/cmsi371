@@ -162,6 +162,10 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
+    var icosahedron = new Shape(ShapesLibrary.icosahedron);
+    console.log(icosahedron);
+    var cube = new Shape(ShapesLibrary.cube);
+
     // Build the objects to display.  Note how each object may come with a
     // rotation axis now.
     objectsToDraw = [
@@ -216,7 +220,8 @@
 
         {
             color: { r: 0.0, g: 0.5, b: 0.0 },
-            vertices: Shapes.toRawLineArray(Shapes.icosahedron()),
+            vertices: icosahedron.toRawLineArray(),
+            // vertices: Shapes.toRawLineArray(Shapes.icosahedron()),
             mode: gl.LINES,
             axis: { x: 0.0, y: 1.0, z: 1.0 }
         },
@@ -239,7 +244,8 @@
 
         // Show off the new shape.
         {
-            vertices: Shapes.toRawTriangleArray(Shapes.cube()),
+            vertices: cube.toRawTriangleArray(),
+            // vertices: ShapesOLD.toRawTriangleArray(ShapesOLD.cube()),
             // 12 triangles in all.
             colors: [].concat(
                 [ 1.0, 0.0, 0.0 ],
