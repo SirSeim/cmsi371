@@ -162,9 +162,9 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    var icosahedron = new Shape(ShapesLibrary.icosahedron);
-    console.log(icosahedron);
-    var cube = new Shape(ShapesLibrary.cube);
+    var icosahedron = new Shape(ShapesLibrary.icosahedron());
+    var cube = new Shape(ShapesLibrary.cube());
+    var sphere = new Shape(ShapesLibrary.sphere(false, 25, 25));
 
     // Build the objects to display.  Note how each object may come with a
     // rotation axis now.
@@ -226,6 +226,13 @@
             axis: { x: 0.0, y: 1.0, z: 1.0 }
         },
 
+        {
+            color: { r: 0.0, g: 1.0, b: 0.0 },
+            vertices: sphere.toRawLineArray(),
+            mode: gl.LINES,
+            axis: { x: 1.0, y: 1.0, z: 1.0 }
+        },
+
         // Something that would have been clipped before.
         {
             vertices: [].concat(
@@ -243,51 +250,51 @@
         },
 
         // Show off the new shape.
-        {
-            vertices: cube.toRawTriangleArray(),
-            // vertices: ShapesOLD.toRawTriangleArray(ShapesOLD.cube()),
-            // 12 triangles in all.
-            colors: [].concat(
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 1.0, 1.0, 0.0 ],
-                [ 1.0, 1.0, 0.0 ],
-                [ 1.0, 1.0, 0.0 ],
-                [ 1.0, 1.0, 0.0 ],
-                [ 1.0, 1.0, 0.0 ],
-                [ 1.0, 1.0, 0.0 ],
-                [ 1.0, 0.0, 1.0 ],
-                [ 1.0, 0.0, 1.0 ],
-                [ 1.0, 0.0, 1.0 ],
-                [ 1.0, 0.0, 1.0 ],
-                [ 1.0, 0.0, 1.0 ],
-                [ 1.0, 0.0, 1.0 ],
-                [ 0.0, 1.0, 1.0 ],
-                [ 0.0, 1.0, 1.0 ],
-                [ 0.0, 1.0, 1.0 ],
-                [ 0.0, 1.0, 1.0 ],
-                [ 0.0, 1.0, 1.0 ],
-                [ 0.0, 1.0, 1.0 ]
-            ),
-            mode: gl.TRIANGLES,
-            axis: { x: 1.0, y: 1.0, z: 1.0 }
-        }
+        // {
+        //     vertices: cube.toRawTriangleArray(),
+        //     // vertices: ShapesOLD.toRawTriangleArray(ShapesOLD.cube()),
+        //     // 12 triangles in all.
+        //     colors: [].concat(
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 0.0, 1.0 ],
+        //         [ 0.0, 0.0, 1.0 ],
+        //         [ 0.0, 0.0, 1.0 ],
+        //         [ 0.0, 0.0, 1.0 ],
+        //         [ 0.0, 0.0, 1.0 ],
+        //         [ 0.0, 0.0, 1.0 ],
+        //         [ 1.0, 1.0, 0.0 ],
+        //         [ 1.0, 1.0, 0.0 ],
+        //         [ 1.0, 1.0, 0.0 ],
+        //         [ 1.0, 1.0, 0.0 ],
+        //         [ 1.0, 1.0, 0.0 ],
+        //         [ 1.0, 1.0, 0.0 ],
+        //         [ 1.0, 0.0, 1.0 ],
+        //         [ 1.0, 0.0, 1.0 ],
+        //         [ 1.0, 0.0, 1.0 ],
+        //         [ 1.0, 0.0, 1.0 ],
+        //         [ 1.0, 0.0, 1.0 ],
+        //         [ 1.0, 0.0, 1.0 ],
+        //         [ 0.0, 1.0, 1.0 ],
+        //         [ 0.0, 1.0, 1.0 ],
+        //         [ 0.0, 1.0, 1.0 ],
+        //         [ 0.0, 1.0, 1.0 ],
+        //         [ 0.0, 1.0, 1.0 ],
+        //         [ 0.0, 1.0, 1.0 ]
+        //     ),
+        //     mode: gl.TRIANGLES,
+        //     axis: { x: 1.0, y: 1.0, z: 1.0 }
+        // }
     ];
 
     // Pass the vertices to WebGL.
