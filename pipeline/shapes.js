@@ -2,9 +2,13 @@
     window.ShapesLibrary = window.ShapesLibrary || {};
     window.Shape = window.Shape || {};
 
-    Shape = function (spec) {
+    Shape = function (spec, gl, GLSLUtilities) {
         this.vertices = spec.vertices;
         this.indices = spec.indices;
+        this.color = spec.color;
+        this.colors = spec.colors;
+        this.gl = gl;
+        this.GLSLUtilities = GLSLUtilities;
     };
 
     Shape.prototype.toRawTriangleArray = function () {
@@ -26,6 +30,16 @@
 
         return result;
     };
+
+    // Shape.prototype.translate = function () {
+    //     // translate code
+
+    //     if (this.children) {
+    //         this.children.forEach(function (shape) {
+    //             shape.translate();
+    //         });
+    //     }
+    // };
 
     Shape.prototype.toRawLineArray = function () {
         var result = [],
@@ -50,6 +64,51 @@
 
         return result;
     };
+
+    // Shape.prototype.prepare = function() {
+    //     // Pass the vertices to WebGL.
+    //     this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, this.vertices);
+
+    //     if (!this.color) {
+    //         this.color = { r: 0.1, g: 0.1, b: 0.1 };
+    //     }
+
+    //     if (!this.colors) {
+    //         // If we have a single color, we expand that into an array
+    //         // of the same color over and over.
+    //         this.colors = [];
+    //         for (j = 0, maxj = this.vertices.length / 3;
+    //                 j < maxj; j += 1) {
+    //             this.colors = this.colors.concat(
+    //                 this.color.r,
+    //                 this.color.g,
+    //                 this.color.b
+    //             );
+    //         }
+    //     }
+    //     this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, this.colors);
+    // };
+
+    Shape.prototype.addChild = function (shape) {
+        if (!this.children) {
+            this.children = [].concat(shape);
+        } else {
+            this.children = this.children.concat(shape);
+        }
+        return this.children.length - 1;
+    };
+
+    Shape.prototype.removeChild = function (shape) {
+        if (!shape) {
+            this.children.pop();
+        } else {
+            this.children.splice(this.children.indexOf(shape), 1);
+        }
+    };
+
+    // Shape.prototype.draw = function (gl) {
+
+    // };
 
 
 
