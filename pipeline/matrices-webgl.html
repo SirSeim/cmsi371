@@ -2,20 +2,17 @@
 <html>
   <head>
     <meta charset="UTF-8"/>
-    <title>Matrices in WebGL</title>
+    <title>Shapes in WebGL</title>
     <link rel="stylesheet" href="matrices-webgl.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.0.css">
   </head>
   <body>
-    <h1>Matrices in WebGL</h1>
+    <h1>Shapes in WebGL</h1>
 
     <p>You’ll need a WebGL-capable web browser to see anything here;
         instructions can be found in this
         <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">official
         WebGL wiki page</a>.</p>
-
-    <p>This page demonstrates a typical model-view + projection
-        matrix setup in WebGL.  It includes some "stock" matrix
-        code but does not have a complete set.</p>
 
     <!-- Note the rectangular canvas now. -->
     <canvas id="matrices-webgl" width="1024" height="512">
@@ -76,5 +73,10 @@
 
     <!-- This script sets up the specific scene for this page. -->
     <script src="matrices-webgl.js"></script>
+
+    <div id="qunit" class="space"></div>
+    <div id="qunit-fixture"></div>
+    <script src="https://code.jquery.com/qunit/qunit-1.23.0.js"></script>
+    <script src="tests.js"></script>
   </body>
 </html>
