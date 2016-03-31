@@ -76,4 +76,40 @@ $(function () {
         ];
         assert.deepEqual(matrix.matrix, expected, "created custom Translation Matrix");
     });
+
+    QUnit.test("get default Scale Matrix", function (assert) {
+        var matrix = Matrix.scaleMatrix();
+        assert.deepEqual(matrix.matrix, new Matrix().matrix, "created default Scale Matrix");
+    });
+
+    QUnit.test("get custom Scale Matrix", function (assert) {
+        var matrix = Matrix.scaleMatrix(3,5,2);
+        var expected = [
+            [3, 0, 0, 0],
+            [0, 5, 0, 0],
+            [0, 0, 2, 0],
+            [0, 0, 0, 1]
+        ];
+        assert.deepEqual(matrix.matrix, expected, "created custom Scale Matrix");
+    });
+
+    QUnit.test("get one Rotation Matrix", function (assert) {
+        var expected = [
+            [0.9984971498638638, 0, -0.054803665148789524, 0],
+            [0, 1, 0, 0],
+            [0.054803665148789524, 0, 0.9984971498638638, 0],
+            [0, 0, 0, 1]
+        ];
+        assert.deepEqual(Matrix.rotationMatrix(Math.PI,0,1,0).matrix, expected, "created one Rotation Matrix");
+    });
+
+    QUnit.test("get second Rotation Matrix", function (assert) {
+        var expected = [
+            [0.9990696642014395, 0.009172032044628568, -0.042138817028900925, 0],
+            [-0.007740746200689371, 0.9993917035163259, 0.03400446722112828, 0],
+            [0.04242507419768877, -0.03364664576014348, 0.9985329320099623, 0],
+            [0, 0, 0, 1]
+        ];
+        assert.deepEqual(Matrix.rotationMatrix(Math.PI,4,5,1).matrix, expected, "created second Rotation Matrix");
+    });
 });
