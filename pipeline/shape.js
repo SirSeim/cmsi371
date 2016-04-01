@@ -16,13 +16,13 @@
         this.transform = new this.MatrixClass();
         this.history = [];
 
-        if (this.mode == "TRIANGLES") {
-            this.glmode = this.gl.TRIANGLES;
-            this.size = this.toRawTriangleArray().length;
-        } else if (this.mode == "LINES") {
-            this.glmode = this.gl.LINES;
-            this.size = this.toRawLineArray().length;
-        }
+        // if (this.mode == "TRIANGLES") {
+        //     this.glmode = this.gl.TRIANGLES;
+        //     this.size = this.toRawTriangleArray().length;
+        // } else if (this.mode == "LINES") {
+        //     this.glmode = this.gl.LINES;
+        //     this.size = this.toRawLineArray().length;
+        // }
     };
 
     Shape.prototype.toRawTriangleArray = function () {
@@ -127,9 +127,13 @@
         if (this.mode == "TRIANGLES") {
             var vertices = this.toRawTriangleArray();
             var colors = this.toColorTriangleArray();
+            this.glmode = this.gl.TRIANGLES;
+            this.size = this.toRawTriangleArray().length;
         } else if (this.mode == "LINES") {
             var vertices = this.toRawLineArray();
             var colors = this.toColorLineArray();
+            this.glmode = this.gl.LINES;
+            this.size = this.toRawLineArray().length;
         } else {
             console.error("no implemented draw mode found");
             return
