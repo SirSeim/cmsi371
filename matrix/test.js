@@ -112,4 +112,68 @@ $(function () {
         ];
         assert.deepEqual(Matrix.rotationMatrix(Math.PI,4,5,1).matrix, expected, "created second Rotation Matrix");
     });
+
+    QUnit.test("get default Orthographic Projection Matrix", function (assert) {
+        var expected = [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, -1, 0],
+            [0, 0, 0, 1]
+        ];
+        assert.deepEqual(Matrix.orthoMatrix(0,0,0,0,0,0).matrix, expected, "created default Orthographic Projection Matrix");
+    });
+
+    QUnit.test("get custom Orthographic Projection Matrix", function (assert) {
+        var expected = [
+            [-1, 0, 0, 3],
+            [0, 2, 0, -11],
+            [0, 0, -0.2857142857142857, -1.2857142857142858],
+            [0, 0, 0, 1]
+        ];
+        assert.deepEqual(Matrix.orthoMatrix(4,2,6,5,1,8).matrix, expected, "created custom Orthographic Projection Matrix");
+    });
+
+    QUnit.test("get default Perspective Projection Matrix", function (assert) {
+        var expected = [
+            [-1, 0, 0, 0],
+            [0, -1, 0, 0],
+            [0, 0, 0, 1],
+            [0, 0, -1, 0]
+        ];
+        assert.deepEqual(Matrix.perspMatrix(0,0,0,0,0,0).matrix, expected, "created default Perspective Projection Matrix");
+    });
+
+    QUnit.test("get custom Perspective Projection Matrix", function (assert) {
+        var expected = [
+            [-1, 0, -3, 0],
+            [0, 2, 11, 0],
+            [0, 0, -1.2857142857142858, -2.2857142857142856],
+            [0, 0, -1, 0]
+        ];
+        assert.deepEqual(Matrix.perspMatrix(4,2,6,5,1,8).matrix, expected, "created custom Perspective Projection Matrix");
+    });
+
+    QUnit.test("convert matrix to gl compatible array", function (assert) {
+        var expected = new Float32Array([
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ]);
+        assert.deepEqual(new Matrix().toGL(), expected, "converted identity matrix");
+
+        var testMatrix = new Matrix([
+            [1, 0, 0, 3],
+            [0, 1, 0, 5],
+            [0, 0, 1, 2],
+            [0, 0, 0, 1]
+        ]);
+        var expected = new Float32Array([
+            1, 0, 0, 3,
+            0, 1, 0, 5,
+            0, 0, 1, 2,
+            0, 0, 0, 1
+        ]);
+        assert.deepEqual(testMatrix.toGL(), expected, "converted custom matrix")
+    });
 });

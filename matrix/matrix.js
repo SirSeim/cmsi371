@@ -134,3 +134,43 @@ Matrix.rotationMatrix = function (angle, x, y, z) {
         ]
     ]);
 };
+
+Matrix.orthoMatrix = function (l, r, t, b, n, f) {
+    l = l || -1;
+    r = r || 1;
+    t = t || 1;
+    b = b || -1;
+    n = n || -1;
+    f = f || 1;
+
+    return new Matrix([
+        [2/(r-l), 0, 0, -(r+l)/(r-l)],
+        [0, 2/(t-b), 0, -(t+b)/(t-b)],
+        [0, 0, -2/(f-n), -(f+n)/(f-n)],
+        [0, 0, 0, 1]
+    ]);
+};
+
+Matrix.perspMatrix = function (l, r, t, b, n, f) {
+    l = l || -1;
+    r = r || 1;
+    t = t || 1;
+    b = b || -1;
+    n = n || -1;
+    f = f || 1;
+
+    return new Matrix([
+        [(2*n)/(r-l), 0, (r+l)/(r-l), 0],
+        [0, (2*n)/(t-b), (t+b)/(t-b), 0],
+        [0, 0, -(f+n)/(f-n), -(2*n*f)/(f-n)],
+        [0, 0, -1, 0]
+    ]);
+};
+
+Matrix.prototype.toGL = function () {
+    var result = [];
+    for (var row = 0; row < this.matrix.length; row++) {
+        result = result.concat(this.row(row));
+    }
+    return new Float32Array(result);
+};
