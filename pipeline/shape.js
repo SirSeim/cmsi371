@@ -2,13 +2,16 @@
     window.ShapesLibrary = window.ShapesLibrary || {};
     window.Shape = window.Shape || {};
 
-    Shape = function (spec, gl, GLSLUtilities) {
+    // one color per indice if using colors
+    Shape = function (spec) {
         this.vertices = spec.vertices;
         this.indices = spec.indices;
         this.color = spec.color;
         this.colors = spec.colors;
-        this.gl = gl;
-        this.GLSLUtilities = GLSLUtilities;
+        this.gl = spec.gl;
+        this.mode = spec.mode || "TRIANGLES";
+        this.GLSLUtilities = spec.GLSLUtilities;
+        this.MatrixClass = spec.MatrixClass;
     };
 
     Shape.prototype.toRawTriangleArray = function () {
@@ -30,16 +33,6 @@
 
         return result;
     };
-
-    // Shape.prototype.translate = function () {
-    //     // translate code
-
-    //     if (this.children) {
-    //         this.children.forEach(function (shape) {
-    //             shape.translate();
-    //         });
-    //     }
-    // };
 
     Shape.prototype.toRawLineArray = function () {
         var result = [],
@@ -65,29 +58,46 @@
         return result;
     };
 
-    // Shape.prototype.prepare = function() {
-    //     // Pass the vertices to WebGL.
-    //     this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, this.vertices);
+    // Still needs a lot of work
+    Shape.prototype.toColorTriangleArray = function () {
+        if (!this.color) {
+            this.color = { r: 0.1, g: 0.1, b: 0.1 };
+        }
+        if (!this.colors) {
+            // If we have a single color, we expand that into an array
+            // of the same color over and over.
+            var colors = [];
+            for (var i = 0, maxi = this.toRawTriangleArray().length / 3;
+                    i < maxi; i++) {
+                colors = colors.concat(
+                    this.color.r,
+                    this.color.g,
+                    this.color.b
+                );
+            }
+            return colors;
+        }
 
-    //     if (!this.color) {
-    //         this.color = { r: 0.1, g: 0.1, b: 0.1 };
-    //     }
+        var colors = [];
+        for (var i = 0, maxi = this.toRawTriangleArray().length / 3; i < maxi; i++) {
+            
+        }
+    };
 
-    //     if (!this.colors) {
-    //         // If we have a single color, we expand that into an array
-    //         // of the same color over and over.
-    //         this.colors = [];
-    //         for (j = 0, maxj = this.vertices.length / 3;
-    //                 j < maxj; j += 1) {
-    //             this.colors = this.colors.concat(
-    //                 this.color.r,
-    //                 this.color.g,
-    //                 this.color.b
-    //             );
-    //         }
-    //     }
-    //     this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, this.colors);
-    // };
+    Shape.prototype.prepare = function () {
+        if (this.mode == "TRIANGLES") {
+            var vertices = this.toRawTriangleArray();
+            var colors = this.toColorTriangleArray();
+        } else if (this.mode == "LINES") {
+            var vertices = this.toRawLineArray();
+            var colors = this.toColorLineArray();
+        } else {
+            console.error("no implemented draw mode found");
+            return
+        }
+        this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, vertices);
+        this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, colors);
+    };
 
     Shape.prototype.addChild = function (shape) {
         if (!this.children) {
@@ -106,9 +116,30 @@
         }
     };
 
-    // Shape.prototype.draw = function (gl) {
+    Shape.prototype.translate = function (x, y, z) {
+        var Matrix = this.MatrixClass;
+        this.transform = this.transform || new Matrix();
+        var translate = Matrix.translateMatrix(x, y, z);
+        this.transform = this.transform.multiply(translate);
+    };
 
-    // };
+    Shape.prototype.scale = function (x, y, z) {
+        var Matrix = this.MatrixClass;
+        this.transform = this.transform || new Matrix();
+        var scale = Matrix.scaleMatrix(x, y, z);
+        this.transform = this.transform.multiply(scale);
+    };
+
+    Shape.prototype.rotate = function (angle, x, y, z) {
+        var Matrix = this.MatrixClass;
+        this.transform = this.transform || new Matrix();
+        var rotation = Matrix.rotationMatrix(angle, x, y, z);
+        this.transform = this.transform.multiply(rotation);
+    };
+
+    Shape.prototype.draw = function () {
+
+    };
 
 
 
