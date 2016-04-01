@@ -136,6 +136,13 @@
         }
         this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, vertices);
         this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, colors);
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].prepare();
+            }
+        }
+        return this;
     };
 
     Shape.prototype.addChild = function (shape) {
@@ -144,7 +151,7 @@
         } else {
             this.children = this.children.concat(shape);
         }
-        return this.children.length - 1;
+        return this;
     };
 
     Shape.prototype.removeChild = function (shape) {
@@ -153,35 +160,68 @@
         } else {
             this.children.splice(this.children.indexOf(shape), 1);
         }
+        return this;
     };
 
     Shape.prototype.translate = function (x, y, z) {
         var translate = this.MatrixClass.translateMatrix(x, y, z);
         this.transform = this.transform.multiply(translate);
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].translate(x, y, z);
+            }
+        }
+        return this;
     };
 
     Shape.prototype.scale = function (x, y, z) {
         var scale = this.MatrixClass.scaleMatrix(x, y, z);
         this.transform = this.transform.multiply(scale);
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].scale(x, y, z);
+            }
+        }
+        return this;
     };
 
     Shape.prototype.rotate = function (angle, x, y, z) {
         var rotation = this.MatrixClass.rotationMatrix(angle, x, y, z);
         this.transform = this.transform.multiply(rotation);
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].rotate(angle, x, y, z);
+            }
+        }
+        return this;
     };
 
     Shape.prototype.save = function () {
         this.history.push(new this.MatrixClass(this.transform.matrix));
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].save();
+            }
+        }
+        return this;
     };
 
     Shape.prototype.restore = function () {
         this.transform = this.history.pop();
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].restore();
+            }
+        }
+        return this;
     };
 
     Shape.prototype.draw = function (vertexColor, modelViewMatrix, vertexPosition) {
-        // console.log("starting");
-        // this.prepare();
-
         // Set the varying colors.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
         this.gl.vertexAttribPointer(vertexColor, 3, this.gl.FLOAT, false, 0, 0);
@@ -190,13 +230,17 @@
         // specify the identity matrix.
         this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, this.transform.toGL());
 
-        // console.log("running " + this.mode);
-        
         // Set the varying vertex coordinates.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
         this.gl.vertexAttribPointer(vertexPosition, 3, this.gl.FLOAT, false, 0, 0);
         this.gl.drawArrays(this.glmode, 0, this.size / 3);
-        // console.log("done");
+
+        if (this.children) {
+            for (var i = 0; i < this.children.length; i++) {
+                this.children[i].draw(vertexColor, modelViewMatrix, vertexPosition);
+            }
+        }
+        return this;
     };
 
 
@@ -204,6 +248,7 @@
     var ICOX = 0.525731112119133606,
         ICOZ = 0.850650808352039932;
     ShapesLibrary.icosahedron = function (addSpec) {
+        addSpec = addSpec || {};
         addSpec.vertices = [
             [ -ICOX, 0.0, ICOZ ],
             [ ICOX, 0.0, ICOZ ],
@@ -244,6 +289,7 @@
     };
 
     ShapesLibrary.cube = function (addSpec) {
+        addSpec = addSpec || {};
         addSpec.vertices = [
             [ 0.5, 0.5, 0.5 ],
             [ 0.5, 0.5, -0.5 ],
@@ -272,6 +318,7 @@
     };
 
     ShapesLibrary.sphere = function (addSpec, radius, horizontal, vertical) {
+        addSpec = addSpec || {};
         var vertices = [];
         var indices = [];
         var radius = radius || 0.5;
@@ -301,6 +348,46 @@
 
         addSpec.vertices = vertices;
         addSpec.indices = indices;
+        return addSpec;
+    };
+
+    ShapesLibrary.faultyPyramid = function (addSpec) {
+        addSpec = addSpec || {};
+        addSpec.vertices = [
+            [ 0.0, 0.0, 0.0 ],
+            [ 0.5, 0.0, 0.0 ],
+            [ 0.0, 0.0, -0.5 ],
+            [ 0.5, 0.0, -0.5 ],
+            [ 0.0, 0.5, 0.0 ]
+        ];
+        addSpec.indices = [
+            [ 0, 1, 3 ],
+            [ 0, 2, 3 ],
+            [ 4, 0, 1 ],
+            [ 4, 1, 3 ],
+            [ 4, 3, 2 ],
+            [ 4, 2, 0 ]
+        ];
+        return addSpec;
+    };
+
+    ShapesLibrary.pyramid = function (addSpec) {
+        addSpec = addSpec || {};
+        addSpec.vertices = [
+            [ -0.25, 0.0, 0.25 ],
+            [ 0.25, 0.0, 0.25 ],
+            [ -0.25, 0.0, -0.25 ],
+            [ 0.25, 0.0, -0.25 ],
+            [ 0.0, 0.5, 0.0 ]
+        ];
+        addSpec.indices = [
+            [ 0, 1, 3 ],
+            [ 0, 2, 3 ],
+            [ 4, 0, 1 ],
+            [ 4, 1, 3 ],
+            [ 4, 3, 2 ],
+            [ 4, 2, 0 ]
+        ];
         return addSpec;
     };
 
