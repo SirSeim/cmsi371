@@ -162,9 +162,15 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    var icosahedron = new Shape(ShapesLibrary.icosahedron());
-    var cube = new Shape(ShapesLibrary.cube());
-    var sphere = new Shape(ShapesLibrary.sphere(false, 25, 25));
+    var library = {
+        gl: gl,
+        GLSLUtilities: GLSLUtilities,
+        MatrixClass: Matrix
+    };
+
+    var icosahedron = new Shape(ShapesLibrary.icosahedron({mode:"LINES"}), library);
+    var cube = new Shape(ShapesLibrary.cube({mode:"TRIANGLES"}), library);
+    var sphere = new Shape(ShapesLibrary.sphere({mode:"LINES"}, false, 25, 25), library);
 
     // Build the objects to display.  Note how each object may come with a
     // rotation axis now.
@@ -172,82 +178,150 @@
         // We move our original triangles a bit to accommodate a new addition
         // to the scene (yes, a translation will also do the trick, if it
         // where implemented in this program).
-        {
+        new Shape({
+            mode: "TRIANGLES",
             vertices: [].concat(
                 [ -2.0, 0.0, 0.0 ],
                 [ -1.5, 0.0, -0.75 ],
                 [ -2.0, 0.5, 0.0 ]
+            ),
+            indices: [].concat(
+                [ 0, 1, 2 ]
             ),
             colors: [].concat(
                 [ 1.0, 0.0, 0.0 ],
                 [ 0.0, 1.0, 0.0 ],
                 [ 0.0, 0.0, 1.0 ]
             ),
-            mode: gl.TRIANGLES
-        },
+        }, library),
+        // {
+        //     vertices: [].concat(
+        //         [ -2.0, 0.0, 0.0 ],
+        //         [ -1.5, 0.0, -0.75 ],
+        //         [ -2.0, 0.5, 0.0 ]
+        //     ),
+        //     colors: [].concat(
+        //         [ 1.0, 0.0, 0.0 ],
+        //         [ 0.0, 1.0, 0.0 ],
+        //         [ 0.0, 0.0, 1.0 ]
+        //     ),
+        //     mode: gl.TRIANGLES
+        // },
 
-        {
-            color: { r: 0.0, g: 1.0, b: 0 },
+        new Shape({
+            mode: "TRIANGLES",
             vertices: [].concat(
                 [ -1.75, 0.0, -0.5 ],
                 [ -1.25, 0.0, -0.5 ],
                 [ -1.75, 0.5, -0.5 ]
             ),
-            mode: gl.TRIANGLES
-        },
+            indices: [].concat(
+                [ 0, 1, 2 ]
+            ),
+            color: { r: 0.0, g: 1.0, b: 0 }
+        }, library),
+        // {
+        //     color: { r: 0.0, g: 1.0, b: 0 },
+        //     vertices: [].concat(
+        //         [ -1.75, 0.0, -0.5 ],
+        //         [ -1.25, 0.0, -0.5 ],
+        //         [ -1.75, 0.5, -0.5 ]
+        //     ),
+        //     mode: gl.TRIANGLES
+        // },
 
-        {
-            color: { r: 0.0, g: 0.0, b: 1.0 },
+        new Shape({
+            mode: "TRIANGLES",
             vertices: [].concat(
                 [ -2.25, 0.0, 0.5 ],
                 [ -1.75, 0.0, 0.5 ],
                 [ -2.25, 0.5, 0.5 ]
             ),
-            mode: gl.TRIANGLES
-        },
-
-        {
-            color: { r: 0.0, g: 0.0, b: 1.0 },
-            vertices: [].concat(
-                [ -1.0, -1.0, 0.75 ],
-                [ -1.0, -0.1, -1.0 ],
-                [ -0.1, -0.1, -1.0 ],
-                [ -0.1, -1.0, 0.75 ]
+            indices: [].concat(
+                [ 0, 1, 2 ]
             ),
-            mode: gl.LINE_LOOP,
-            axis: { x: 1.0, y: 0.0, z: 1.0 }
-        },
+            color: { r: 0.0, g: 0.0, b: 1.0 }
+        }, library),
+        // {
+        //     color: { r: 0.0, g: 0.0, b: 1.0 },
+        //     vertices: [].concat(
+        //         [ -2.25, 0.0, 0.5 ],
+        //         [ -1.75, 0.0, 0.5 ],
+        //         [ -2.25, 0.5, 0.5 ]
+        //     ),
+        //     mode: gl.TRIANGLES
+        // },
 
-        {
+
+        // {
+        //     color: { r: 0.0, g: 0.0, b: 1.0 },
+        //     vertices: [].concat(
+        //         [ -1.0, -1.0, 0.75 ],
+        //         [ -1.0, -0.1, -1.0 ],
+        //         [ -0.1, -0.1, -1.0 ],
+        //         [ -0.1, -1.0, 0.75 ]
+        //     ),
+        //     mode: gl.LINE_LOOP,
+        //     axis: { x: 1.0, y: 0.0, z: 1.0 }
+        // },
+
+        new Shape(ShapesLibrary.icosahedron({
             color: { r: 0.0, g: 0.5, b: 0.0 },
-            vertices: icosahedron.toRawLineArray(),
-            // vertices: Shapes.toRawLineArray(Shapes.icosahedron()),
-            mode: gl.LINES,
+            mode:"LINES",
             axis: { x: 0.0, y: 1.0, z: 1.0 }
-        },
+        }), library),
+        // {
+        //     color: { r: 0.0, g: 0.5, b: 0.0 },
+        //     vertices: icosahedron.toRawLineArray(),
+        //     // vertices: Shapes.toRawLineArray(Shapes.icosahedron()),
+        //     mode: gl.LINES,
+        //     axis: { x: 0.0, y: 1.0, z: 1.0 }
+        // },
 
-        {
+        new Shape(ShapesLibrary.sphere({
             color: { r: 0.0, g: 1.0, b: 0.0 },
-            vertices: sphere.toRawLineArray(),
-            mode: gl.LINES,
+            mode:"LINES",
             axis: { x: 1.0, y: 1.0, z: 1.0 }
-        },
+        }, 1.4, 25, 25), library),
+        // {
+        //     color: { r: 0.0, g: 1.0, b: 0.0 },
+        //     vertices: sphere.toRawLineArray(),
+        //     mode: gl.LINES,
+        //     axis: { x: 1.0, y: 1.0, z: 1.0 }
+        // },
 
         // Something that would have been clipped before.
-        {
+        new Shape({
             vertices: [].concat(
                 [ 3.0, 1.5, 0.0 ],
                 [ 2.0, -1.5, 0.0 ],
                 [ 4.0, -1.5, 0.0 ]
+            ),
+            indices: [].concat(
+                [ 0, 1, 2 ]
             ),
             colors: [].concat(
                 [ 1.0, 0.5, 0.0 ],
                 [ 0.0, 0.0, 0.5 ],
                 [ 0.5, 0.75, 0.5 ]
             ),
-            mode: gl.TRIANGLES,
+            mode: "TRIANGLES",
             axis: { x: -0.5, y: 1.0, z: 0.0 }
-        },
+        }, library),
+        // {
+        //     vertices: [].concat(
+        //         [ 3.0, 1.5, 0.0 ],
+        //         [ 2.0, -1.5, 0.0 ],
+        //         [ 4.0, -1.5, 0.0 ]
+        //     ),
+        //     colors: [].concat(
+        //         [ 1.0, 0.5, 0.0 ],
+        //         [ 0.0, 0.0, 0.5 ],
+        //         [ 0.5, 0.75, 0.5 ]
+        //     ),
+        //     mode: gl.TRIANGLES,
+        //     axis: { x: -0.5, y: 1.0, z: 0.0 }
+        // },
 
         // Show off the new shape.
         // {
@@ -297,27 +371,30 @@
         // }
     ];
 
-    // Pass the vertices to WebGL.
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-        objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
-                objectsToDraw[i].vertices);
-
-        if (!objectsToDraw[i].colors) {
-            // If we have a single color, we expand that into an array
-            // of the same color over and over.
-            objectsToDraw[i].colors = [];
-            for (j = 0, maxj = objectsToDraw[i].vertices.length / 3;
-                    j < maxj; j += 1) {
-                objectsToDraw[i].colors = objectsToDraw[i].colors.concat(
-                    objectsToDraw[i].color.r,
-                    objectsToDraw[i].color.g,
-                    objectsToDraw[i].color.b
-                );
-            }
-        }
-        objectsToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-                objectsToDraw[i].colors);
+        objectsToDraw[i].prepare();
     }
+    // Pass the vertices to WebGL.
+    // for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
+    //     objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
+    //             objectsToDraw[i].vertices);
+
+    //     if (!objectsToDraw[i].colors) {
+    //         // If we have a single color, we expand that into an array
+    //         // of the same color over and over.
+    //         objectsToDraw[i].colors = [];
+    //         for (j = 0, maxj = objectsToDraw[i].vertices.length / 3;
+    //                 j < maxj; j += 1) {
+    //             objectsToDraw[i].colors = objectsToDraw[i].colors.concat(
+    //                 objectsToDraw[i].color.r,
+    //                 objectsToDraw[i].color.g,
+    //                 objectsToDraw[i].color.b
+    //             );
+    //         }
+    //     }
+    //     objectsToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
+    //             objectsToDraw[i].colors);
+    // }
 
     // Initialize the shaders.
     shaderProgram = GLSLUtilities.initSimpleShaderProgram(
@@ -363,26 +440,26 @@
      * Displays an individual object, including a transformation that now varies
      * for each object drawn.
      */
-    drawObject = function (object) {
-        // Set the varying colors.
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
-        gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+    // drawObject = function (object) {
+    //     // Set the varying colors.
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
+    //     gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
 
-        // Set up the model-view matrix, if an axis is included.  If not, we
-        // specify the identity matrix.
-        gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(object.axis ?
-                getRotationMatrix(currentRotation, object.axis.x, object.axis.y, object.axis.z) :
-                [1, 0, 0, 0, // N.B. In a full-fledged matrix library, the identity
-                 0, 1, 0, 0, //      matrix should be available as a function.
-                 0, 0, 1, 0,
-                 0, 0, 0, 1]
-            ));
+    //     // Set up the model-view matrix, if an axis is included.  If not, we
+    //     // specify the identity matrix.
+    //     gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(object.axis ?
+    //             getRotationMatrix(currentRotation, object.axis.x, object.axis.y, object.axis.z) :
+    //             [1, 0, 0, 0, // N.B. In a full-fledged matrix library, the identity
+    //              0, 1, 0, 0, //      matrix should be available as a function.
+    //              0, 0, 1, 0,
+    //              0, 0, 0, 1]
+    //         ));
 
-        // Set the varying vertex coordinates.
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
-        gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-        gl.drawArrays(object.mode, 0, object.vertices.length / 3);
-    };
+    //     // Set the varying vertex coordinates.
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
+    //     gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+    //     gl.drawArrays(object.mode, 0, object.vertices.length / 3);
+    // };
 
     /*
      * Displays the scene.
@@ -393,7 +470,12 @@
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            drawObject(objectsToDraw[i]);
+            // drawObject(objectsToDraw[i]);
+            if (objectsToDraw[i].axis) {
+                objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
+                console.log("rotating");
+            }
+            objectsToDraw[i].draw(vertexColor, modelViewMatrix, vertexPosition);
         }
 
         // All done.
