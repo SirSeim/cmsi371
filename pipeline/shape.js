@@ -14,6 +14,7 @@
         this.GLSLUtilities = libraries.GLSLUtilities;
         this.MatrixClass = libraries.MatrixClass;
         this.transform = new this.MatrixClass();
+        this.history = [];
 
         if (this.mode == "TRIANGLES") {
             this.glmode = this.gl.TRIANGLES;
@@ -165,13 +166,20 @@
     };
 
     Shape.prototype.rotate = function (angle, x, y, z) {
-        // var rotation = this.MatrixClass.rotationMatrix(angle, x, y, z);
-        // this.transform = this.transform.multiply(rotation);
-        this.transform = this.MatrixClass.rotationMatrix(angle, x, y, z);
+        var rotation = this.MatrixClass.rotationMatrix(angle, x, y, z);
+        this.transform = this.transform.multiply(rotation);
+    };
+
+    Shape.prototype.save = function () {
+        this.history.push(new this.MatrixClass(this.transform.matrix));
+    };
+
+    Shape.prototype.restore = function () {
+        this.transform = this.history.pop();
     };
 
     Shape.prototype.draw = function (vertexColor, modelViewMatrix, vertexPosition) {
-        console.log("starting");
+        // console.log("starting");
         // this.prepare();
 
         // Set the varying colors.
@@ -182,13 +190,13 @@
         // specify the identity matrix.
         this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, this.transform.toGL());
 
-        console.log("running " + this.mode);
+        // console.log("running " + this.mode);
         
         // Set the varying vertex coordinates.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
         this.gl.vertexAttribPointer(vertexPosition, 3, this.gl.FLOAT, false, 0, 0);
         this.gl.drawArrays(this.glmode, 0, this.size / 3);
-        console.log("done");
+        // console.log("done");
     };
 
 

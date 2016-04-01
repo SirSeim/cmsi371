@@ -471,11 +471,14 @@
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
             // drawObject(objectsToDraw[i]);
+            objectsToDraw[i].save();
             if (objectsToDraw[i].axis) {
+
                 objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
-                console.log("rotating");
+                // console.log("rotating");
             }
             objectsToDraw[i].draw(vertexColor, modelViewMatrix, vertexPosition);
+            objectsToDraw[i].restore();
         }
 
         // All done.
@@ -488,14 +491,14 @@
     // We keep the vertical range fixed, but change the horizontal range
     // according to the aspect ratio of the canvas.  We can also expand
     // the z range now.
-    gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, new Float32Array(getOrthoMatrix(
+    gl.uniformMatrix4fv(projectionMatrix, gl.FALSE, Matrix.orthoMatrix(
         -2 * (canvas.width / canvas.height),
         2 * (canvas.width / canvas.height),
         -2,
         2,
         -10,
         10
-    )));
+    ).toGL());
 
     // Animation initialization/support.
     previousTimestamp = null;
