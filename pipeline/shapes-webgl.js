@@ -65,61 +65,8 @@
         MatrixClass: Matrix
     };
 
-    // var icosahedron = new Shape(ShapesLibrary.icosahedron({mode:"LINES"}), library);
-    // var cube = new Shape(ShapesLibrary.cube({mode:"TRIANGLES"}), library);
-    // var sphere = new Shape(ShapesLibrary.sphere({mode:"LINES"}, false, 25, 25), library);
 
-    // Build the objects to display.  Note how each object may come with a
-    // rotation axis now.
     objectsToDraw = [
-        // We move our original triangles a bit to accommodate a new addition
-        // to the scene (yes, a translation will also do the trick, if it
-        // where implemented in this program).
-        // new Shape({
-        //     mode: "TRIANGLES",
-        //     vertices: [
-        //         [ -2.0, 0.0, 0.0 ],
-        //         [ -1.5, 0.0, -0.75 ],
-        //         [ -2.0, 0.5, 0.0 ]
-        //     ],
-        //     indices: [
-        //         [ 0, 1, 2 ]
-        //     ],
-        //     colors: [
-        //         [ 1.0, 0.0, 0.0 ],
-        //         [ 0.0, 1.0, 0.0 ],
-        //         [ 0.0, 0.0, 1.0 ]
-        //     ],
-        // }, library),
-        // new Shape({
-        //     mode: "TRIANGLES",
-        //     vertices: [].concat(
-        //         [ -1.75, 0.0, -0.5 ],
-        //         [ -1.25, 0.0, -0.5 ],
-        //         [ -1.75, 0.5, -0.5 ]
-        //     ),
-        //     indices: [].concat(
-        //         [ 0, 1, 2 ]
-        //     ),
-        //     color: { r: 0.0, g: 1.0, b: 0 }
-        // }, library),
-        // new Shape({
-        //     mode: "TRIANGLES",
-        //     vertices: [].concat(
-        //         [ -2.25, 0.0, 0.5 ],
-        //         [ -1.75, 0.0, 0.5 ],
-        //         [ -2.25, 0.5, 0.5 ]
-        //     ),
-        //     indices: [].concat(
-        //         [ 0, 1, 2 ]
-        //     ),
-        //     color: { r: 0.0, g: 0.0, b: 1.0 }
-        // }, library),
-        // new Shape(ShapesLibrary.icosahedron({
-        //     color: { r: 0.0, g: 0.5, b: 0.0 },
-        //     mode:"LINES",
-        //     axis: { x: 0.0, y: 1.0, z: 1.0 }
-        // }), library),
         new Shape(ShapesLibrary.sphere({
             color: { r: 0.0, g: 1.0, b: 0.0 },
             mode: "LINES",
@@ -149,11 +96,6 @@
             indices: [
                 [ 0, 1, 2 ]
             ],
-            // colors: [
-            //     [ 1.0, 0.5, 0.0 ],
-            //     [ 0.0, 0.0, 0.5 ],
-            //     [ 0.5, 0.75, 0.5 ]
-            // ],
             color: { r: 1.0, g: 1.0, b: 0.0 },
             mode: "TRIANGLES",
             axis: { x: -0.5, y: 1.0, z: 0.0 }
@@ -213,12 +155,10 @@
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            // drawObject(objectsToDraw[i]);
             objectsToDraw[i].save();
             if (objectsToDraw[i].axis) {
 
                 objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
-                // console.log("rotating");
             }
             objectsToDraw[i].draw(vertexColor, modelViewMatrix, vertexPosition);
             objectsToDraw[i].restore();
