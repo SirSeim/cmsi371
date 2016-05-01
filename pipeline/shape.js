@@ -9,11 +9,19 @@
         this.color = spec.color;
         this.colors = spec.colors;
         this.axis = spec.axis;
+        this.specularColor = spec.specularColor;
+        this.shininess = spec.shininess;
         this.gl = libraries.gl;
         this.mode = spec.mode || "TRIANGLES";
         this.GLSLUtilities = libraries.GLSLUtilities;
         this.MatrixClass = libraries.MatrixClass;
-        this.transform = new this.MatrixClass();
+        this.VectorClass = libraries.VectorClass;
+        // this.transform = new this.MatrixClass();
+        this.transform = {
+            translate: {x:0.0, y:0.0, z:0.0},
+            rotate: {angle:0.0, x:0.0, y:0.0, z:0.0},
+            scale: {x:1.0, y:1.0, z:1.0}
+        }
         this.history = [];
 
         // if (this.mode == "TRIANGLES") {
@@ -62,6 +70,52 @@
                     this.vertices[
                         this.indices[i][(j + 1) % maxj]
                     ]
+                );
+            }
+        }
+
+        return result;
+    };
+
+    Shape.prototype.toNormalArray = function () {
+        var result = [];
+
+        // For each face...
+        for (var i = 0, maxi = this.indices.length; i < maxi; i += 1) {
+            // We form vectors from the first and second then second and third vertices.
+            var p0 = this.vertices[this.indices[i][0]];
+            var p1 = this.vertices[this.indices[i][1]];
+            var p2 = this.vertices[this.indices[i][2]];
+
+            // Technically, the first value is not a vector, but v can stand for vertex
+            // anyway, so...
+            var v0 = new Vector(p0[0], p0[1], p0[2]);
+            var v1 = new Vector(p1[0], p1[1], p1[2]).subtract(v0);
+            var v2 = new Vector(p2[0], p2[1], p2[2]).subtract(v0);
+            var normal = v1.cross(v2).unit();
+
+            // We then use this same normal for every vertex in this face.
+            for (var j = 0, maxj = this.indices[i].length; j < maxj; j += 1) {
+                result = result.concat(
+                    [ normal.x(), normal.y(), normal.z() ]
+                );
+            }
+        }
+
+        return result;
+    };
+
+    Shape.prototype.toVertexNormalArray = function () {
+        var result = [];
+
+        // For each face...
+        for (var i = 0, maxi = this.indices.length; i < maxi; i += 1) {
+            // For each vertex in that face...
+            for (var j = 0, maxj = this.indices[i].length; j < maxj; j += 1) {
+                var p = this.vertices[this.indices[i][j]];
+                var normal = new Vector(p[0], p[1], p[2]).unit();
+                result = result.concat(
+                    [ normal.x(), normal.y(), normal.z() ]
                 );
             }
         }
@@ -123,6 +177,10 @@
         return this.colors;
     };
 
+    Shape.prototype.toSepcularLineArray = function () {
+
+    };
+
     Shape.prototype.prepare = function () {
         if (this.mode == "TRIANGLES") {
             var vertices = this.toRawTriangleArray();
@@ -140,6 +198,7 @@
         }
         this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, vertices);
         this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, colors);
+        this.specularBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, specularColors);
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
@@ -168,8 +227,9 @@
     };
 
     Shape.prototype.translate = function (x, y, z) {
-        var translate = this.MatrixClass.translateMatrix(x, y, z);
-        this.transform = this.transform.multiply(translate);
+        this.transform.translate.x += x;
+        this.transform.translate.y += y;
+        this.transform.translate.z += z;
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
@@ -180,8 +240,9 @@
     };
 
     Shape.prototype.scale = function (x, y, z) {
-        var scale = this.MatrixClass.scaleMatrix(x, y, z);
-        this.transform = this.transform.multiply(scale);
+        this.transform.scale.x *= x;
+        this.transform.scale.y *= y;
+        this.transform.scale.z *= z;
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
@@ -192,8 +253,10 @@
     };
 
     Shape.prototype.rotate = function (angle, x, y, z) {
-        var rotation = this.MatrixClass.rotationMatrix(angle, x, y, z);
-        this.transform = this.transform.multiply(rotation);
+        this.transform.rotate.angle += angle;
+        this.transform.rotate.x += x;
+        this.transform.rotate.y += y;
+        this.transform.rotate.z += z;
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
@@ -203,8 +266,16 @@
         return this;
     };
 
+    var cloneTransform = function (obj) {
+        return {
+            translate: {x:obj.translate.x, y:obj.translate.y, z:obj.translate.z},
+            rotate: {angle:obj.rotate.angle, x:obj.rotate.x, y:obj.rotate.y, z:obj.rotate.z},
+            scale: {x:obj.scale.x, y:obj.scale.y, z:obj.scale.z}
+        };
+    }
+
     Shape.prototype.save = function () {
-        this.history.push(new this.MatrixClass(this.transform.matrix));
+        this.history.push(cloneTransform(this.transform));
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
@@ -225,14 +296,30 @@
         return this;
     };
 
-    Shape.prototype.draw = function (vertexColor, modelViewMatrix, vertexPosition) {
+    Shape.prototype.draw = function (vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition) {
         // Set the varying colors.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
-        this.gl.vertexAttribPointer(vertexColor, 3, this.gl.FLOAT, false, 0, 0);
+        this.gl.vertexAttribPointer(vertexDiffuseColor, 3, this.gl.FLOAT, false, 0, 0);
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.specularBuffer);
+        this.gl.vertexAttribPointer(vertexSpecularColor, 3, this.gl.FLOAT, false, 0, 0);
+
+        // Set the shininess.
+        this.gl.uniform1f(shininess, this.shininess);
 
         // Set up the model-view matrix, if an axis is included.  If not, we
         // specify the identity matrix.
-        this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, this.transform.toGL());
+        var translate = this.MatrixClass.translateMatrix(this.transform.translate.x, this.transform.translate.y, this.transform.translate.z);
+        var rotate = this.MatrixClass.rotationMatrix(this.transform.rotate.angle, this.transform.rotate.x, this.transform.rotate.y, this.transform.rotate.z);
+        var scale = this.MatrixClass.scaleMatrix(this.transform.scale.x, this.transform.scale.y, this.transform.scale.z);
+        var product = scale.multiply(rotate).multiply(translate);
+        // console.log(product);
+
+        this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, product.toGL());
+
+        // Set the varying normal vectors.
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+        gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
 
         // Set the varying vertex coordinates.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
@@ -241,9 +328,11 @@
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
-                this.children[i].draw(vertexColor, modelViewMatrix, vertexPosition);
+                this.children[i].draw(vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition);
             }
         }
+
+        // console.log(this.axis);
         return this;
     };
 
