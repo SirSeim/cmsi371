@@ -62,31 +62,33 @@
     var library = {
         gl: gl,
         GLSLUtilities: GLSLUtilities,
-        MatrixClass: Matrix
+        MatrixClass: Matrix,
+        VectorClass: Vector
     };
 
 
     objectsToDraw = [
-        new Shape(ShapesLibrary.sphere({
-            color: { r: 0.0, g: 1.0, b: 0.0 },
-            mode: "LINES",
-            axis: { x: 1.0, y: 1.0, z: 1.0 }
-        }, 1.4, 10, 10), library).addChild(
-            new Shape(ShapesLibrary.cube({
-                color: { r: 0.0, g: 0.0, b: 1.0 },
-                mode: "LINES",
-            }), library)
-        ),
+        // new Shape(ShapesLibrary.sphere({
+        //     color: { r: 0.0, g: 1.0, b: 0.0 },
+        //     mode: "LINES",
+        //     axis: { x: 1.0, y: 1.0, z: 1.0 }
+        // }, 1.4, 10, 10), library).addChild(
+        //     new Shape(ShapesLibrary.cube({
+        //         color: { r: 0.0, g: 0.0, b: 1.0 },
+        //         mode: "LINES",
+        //     }), library)
+        // ),
         new Shape(ShapesLibrary.faultyPyramid({
             color: { r: 1.0, g: 0.0, b: 0.0 },
-            mode: "TRIANGLES",
-            axis: { x: 1.0, y: 1.0, z: 0.0 }
-        }), library).scale(1.0,-2.0,1.0),
-        new Shape(ShapesLibrary.pyramid({
-            color: { r: 1.0, g: 1.0, b: 0.0 },
-            mode: "TRIANGLES",
-            axis: { x: 1.0, y: 1.0, z: 0.0 }
-        }), library).scale(3.0,3.0,3.0),
+            mode: "LINES",
+            // axis: { x: 1.0, y: 1.0, z: 0.0 }
+        }), library).scale(1.0,-2.0,1.0).addChild(
+            new Shape(ShapesLibrary.pyramid({
+                color: { r: 1.0, g: 1.0, b: 0.0 },
+                mode: "LINES",
+                // axis: { x: 1.0, y: 1.0, z: 0.0 }
+            }), library).scale(2.0,2.0,2.0)
+        ).scale(2.0,2.0,2.0),
         new Shape({
             vertices: [
                 [ 3.0, 1.5, 0.0 ],
@@ -136,15 +138,27 @@
     gl.useProgram(shaderProgram);
 
     // Hold on to the important variables within the shaders.
-    vertexPosition = gl.getAttribLocation(shaderProgram, "vertexPosition");
+    var vertexPosition = gl.getAttribLocation(shaderProgram, "vertexPosition");
     gl.enableVertexAttribArray(vertexPosition);
-    vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
-    gl.enableVertexAttribArray(vertexColor);
+    var vertexDiffuseColor = gl.getAttribLocation(shaderProgram, "vertexDiffuseColor");
+    gl.enableVertexAttribArray(vertexDiffuseColor);
+    var vertexSpecularColor = gl.getAttribLocation(shaderProgram, "vertexSpecularColor");
+    gl.enableVertexAttribArray(vertexSpecularColor);
+    var normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
+    gl.enableVertexAttribArray(normalVector);
 
     // Finally, we come to the typical setup for transformation matrices:
     // model-view and projection, managed separately.
-    modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
-    projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+    var modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
+    var xRotationMatrix = gl.getUniformLocation(shaderProgram, "xRotationMatrix");
+    var yRotationMatrix = gl.getUniformLocation(shaderProgram, "yRotationMatrix");
+    var projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+
+    // Note the additional variables.
+    var lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
+    var lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
+    var lightSpecular = gl.getUniformLocation(shaderProgram, "lightSpecular");
+    var shininess = gl.getUniformLocation(shaderProgram, "shininess");
 
     /*
      * Displays the scene.
