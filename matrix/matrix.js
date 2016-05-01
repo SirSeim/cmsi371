@@ -79,6 +79,7 @@ Matrix.scaleMatrix = function (x, y, z) {
 };
 
 Matrix.rotationMatrix = function (angle, x, y, z) {
+    angle = angle || 0
     // In production code, this function should be associated
     // with a matrix object with associated functions.
     var axisLength = Math.sqrt((x * x) + (y * y) + (z * z));
@@ -104,7 +105,7 @@ Matrix.rotationMatrix = function (angle, x, y, z) {
     var zs = z * s;
 
     // GL expects its matrices in column major order.
-    return new Matrix([
+    var matrix = new Matrix([
         [
             (x2 * oneMinusC) + c,
             (xy * oneMinusC) + zs,
@@ -133,9 +134,11 @@ Matrix.rotationMatrix = function (angle, x, y, z) {
             1.0
         ]
     ]);
+    console.log(matrix);
+    return matrix;
 };
 
-Matrix.orthoMatrix = function (l, r, t, b, n, f) {
+Matrix.orthoMatrix = function (l, r, b, t, n, f) {
     l = l || -1;
     r = r || 1;
     t = t || 1;
@@ -151,7 +154,7 @@ Matrix.orthoMatrix = function (l, r, t, b, n, f) {
     ]);
 };
 
-Matrix.perspMatrix = function (l, r, t, b, n, f) {
+Matrix.perspMatrix = function (l, r, b, t, n, f) {
     l = l || -1;
     r = r || 1;
     t = t || 1;
