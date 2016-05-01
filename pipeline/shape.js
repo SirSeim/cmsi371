@@ -177,8 +177,56 @@
         return this.colors;
     };
 
-    Shape.prototype.toSepcularLineArray = function () {
+    Shape.prototype.toSpecularTriangleArray = function () {
+        if (!this.specularColor) {
+            this.specularColor = { r: 0.1, g: 0.1, b: 0.1 };
+        }
+        if (!this.specularColors) {
+            // If we have a single specularColor, we expand that into an array
+            // of the same specularColor over and over.
+            var specularColors = [];
+            for (var i = 0, maxi = this.toRawTriangleArray().length / 3;
+                    i < maxi; i++) {
+                specularColors = specularColors.concat(
+                    this.specularColor.r,
+                    this.specularColor.g,
+                    this.specularColor.b
+                );
+            }
+            return specularColors;
+        }
 
+        var specularColors = [];
+        for (var i = 0, maxi = this.toRawTriangleArray().length / 3; i < maxi; i++) {
+            
+        }
+        return this.specularColors;
+    }
+
+    Shape.prototype.toSpecularLineArray = function () {
+        if (!this.specularColor) {
+            this.specularColor = { r: 0.1, g: 0.1, b: 0.1 };
+        }
+        if (!this.specularColors) {
+            // If we have a single specularColor, we expand that into an array
+            // of the same specularColor over and over.
+            var specularColors = [];
+            for (var i = 0, maxi = this.toRawLineArray().length / 3;
+                    i < maxi; i++) {
+                specularColors = specularColors.concat(
+                    this.specularColor.r,
+                    this.specularColor.g,
+                    this.specularColor.b
+                );
+            }
+            return specularColors;
+        }
+
+        var specularColors = [];
+        for (var i = 0, maxi = this.toRawLineArray().length / 3; i < maxi; i++) {
+            
+        }
+        return this.specularColors;
     };
 
     Shape.prototype.prepare = function () {
