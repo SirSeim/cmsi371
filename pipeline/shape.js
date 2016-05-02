@@ -293,11 +293,11 @@
         this.transform.translate.y += y;
         this.transform.translate.z += z;
 
-        if (this.children) {
-            for (var i = 0; i < this.children.length; i++) {
-                this.children[i].translate(x, y, z);
-            }
-        }
+        // if (this.children) {
+        //     for (var i = 0; i < this.children.length; i++) {
+        //         this.children[i].translate(x, y, z);
+        //     }
+        // }
         return this;
     };
 
@@ -306,11 +306,11 @@
         this.transform.scale.y *= y;
         this.transform.scale.z *= z;
 
-        if (this.children) {
-            for (var i = 0; i < this.children.length; i++) {
-                this.children[i].scale(x, y, z);
-            }
-        }
+        // if (this.children) {
+        //     for (var i = 0; i < this.children.length; i++) {
+        //         this.children[i].scale(x, y, z);
+        //     }
+        // }
         return this;
     };
 
@@ -320,11 +320,11 @@
         this.transform.rotate.y += y;
         this.transform.rotate.z += z;
 
-        if (this.children) {
-            for (var i = 0; i < this.children.length; i++) {
-                this.children[i].rotate(angle, x, y, z);
-            }
-        }
+        // if (this.children) {
+        //     for (var i = 0; i < this.children.length; i++) {
+        //         this.children[i].rotate(angle, x, y, z);
+        //     }
+        // }
         return this;
     };
 
@@ -375,15 +375,21 @@
 
         // Set up the model-view matrix, if an axis is included.  If not, we
         // specify the identity matrix.
+        if (this.parent) {
+            var parentMatrix = this.parent.product;
+        }
         var translate = this.MatrixClass.translateMatrix(this.transform.translate.x, this.transform.translate.y, this.transform.translate.z);
         var rotate = this.MatrixClass.rotationMatrix(this.transform.rotate.angle, this.transform.rotate.x, this.transform.rotate.y, this.transform.rotate.z);
         var scale = this.MatrixClass.scaleMatrix(this.transform.scale.x, this.transform.scale.y, this.transform.scale.z);
-        var product = scale.multiply(rotate).multiply(translate);
+        var product = new this.MatrixClass();
+        if (parentMatrix) { product = product.multiply(parentMatrix); }
+        product = product.multiply(scale).multiply(rotate).multiply(translate);
         // console.log(product);
 
         // console.log((new this.MatrixClass()).toGL());
         // this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, (new this.MatrixClass()).toGL());
         this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, product.toGL());
+        this.product = product;
 
         // Set the varying vertex coordinates.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);

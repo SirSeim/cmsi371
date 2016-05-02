@@ -74,14 +74,14 @@
             shininess: 0.5,
             mode: "TRIANGLES",
             axis: { x: 1.0, y: 0.0, z: 0.0 }
-        }, 1.4, 15, 15), library).translate(1.0,1.0,1.0)
+        }, 1.4, 15, 15), library).translate(1.0,0.0,1.0)
             .addChild(
                 new Shape(ShapesLibrary.cube({
                     color: { r: 0.0, g: 0.0, b: 1.0 },
                     specularColor: { r: 1.0, g: 1.0, b: 1.0 },
                     shininess: 50,
                     mode: "TRIANGLES"
-                }), library).scale(3,1,3).rotate(180,1,0,0)
+                }), library).scale(3,1,3).rotate(200,0,1,0).translate(-1,1,1)
             ),
         // new Shape(ShapesLibrary.faultyPyramid({
         //     color: { r: 1.0, g: 0.0, b: 0.0 },
