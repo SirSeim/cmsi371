@@ -274,6 +274,7 @@
         } else {
             this.children = this.children.concat(shape);
         }
+        shape.parent = this;
         return this;
     };
 
@@ -282,6 +283,7 @@
             this.children.pop();
         } else {
             this.children.splice(this.children.indexOf(shape), 1);
+            shape.parent = null;
         }
         return this;
     };
@@ -364,6 +366,10 @@
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.specularBuffer);
         this.gl.vertexAttribPointer(vertexSpecularColor, 3, this.gl.FLOAT, false, 0, 0);
 
+        // Set the varying normal vectors.
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.normalBuffer);
+        this.gl.vertexAttribPointer(normalVector, 3, this.gl.FLOAT, false, 0, 0);
+
         // Set the shininess.
         this.gl.uniform1f(shininess, this.shininess);
 
@@ -375,13 +381,9 @@
         var product = scale.multiply(rotate).multiply(translate);
         // console.log(product);
 
-        console.log((new this.MatrixClass()).toGL());
-        this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, (new this.MatrixClass()).toGL());
-        // this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, product.toGL());
-
-        // Set the varying normal vectors.
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.normalBuffer);
-        this.gl.vertexAttribPointer(normalVector, 3, this.gl.FLOAT, false, 0, 0);
+        // console.log((new this.MatrixClass()).toGL());
+        // this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, (new this.MatrixClass()).toGL());
+        this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, product.toGL());
 
         // Set the varying vertex coordinates.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
