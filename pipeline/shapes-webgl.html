@@ -86,8 +86,8 @@
           fragmentDiffuseColor = vertexDiffuseColor;
           fragmentSpecularColor = vertexSpecularColor;
           gl_Position = projectionMatrix *
-                  xRotationMatrix * yRotationMatrix *
-                  modelViewMatrix * vec4(2.0 * vertexPosition, 1.0);
+//                  xRotationMatrix * yRotationMatrix *
+                  modelViewMatrix * vec4(vertexPosition, 1.0);
       }
     </script>
 
