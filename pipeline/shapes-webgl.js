@@ -71,16 +71,18 @@
         new Shape(ShapesLibrary.sphere({
             color: { r: 0.0, g: 1.0, b: 0.0 },
             specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-            shininess: 20,
+            shininess: 0.5,
             mode: "TRIANGLES",
-            axis: { x: 1.0, y: 1.0, z: 1.0 }
-        }, 1.4, 10, 10), library)
-        // .addChild(
-        //     new Shape(ShapesLibrary.cube({
-        //         color: { r: 0.0, g: 0.0, b: 1.0 },
-        //         mode: "LINES",
-        //     }), library)
-        // ),
+            axis: { x: 1.0, y: 0.0, z: 0.0 }
+        }, 1.4, 15, 15), library).translate(1.0,1.0,1.0)
+            .addChild(
+                new Shape(ShapesLibrary.cube({
+                    color: { r: 0.0, g: 0.0, b: 1.0 },
+                    specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+                    shininess: 50,
+                    mode: "TRIANGLES"
+                }), library).scale(3,1,3).rotate(180,1,0,0)
+            ),
         // new Shape(ShapesLibrary.faultyPyramid({
         //     color: { r: 1.0, g: 0.0, b: 0.0 },
         //     mode: "LINES",
@@ -172,13 +174,13 @@
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            // objectsToDraw[i].save();
-            // if (objectsToDraw[i].axis) {
+            objectsToDraw[i].save();
+            if (objectsToDraw[i].axis) {
 
-            //     objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
-            // }
+                objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
+            }
             objectsToDraw[i].draw(vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition);
-            // objectsToDraw[i].restore();
+            objectsToDraw[i].restore();
         }
 
         // All done.
@@ -201,7 +203,7 @@
     ).toGL());
 
     // Set up our one light source and its colors.
-    gl.uniform4fv(lightPosition, [500.0, 1000.0, 100.0, 1.0]);
+    gl.uniform4fv(lightPosition, [100, 0, -50, 1.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
     gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
@@ -234,6 +236,11 @@
         if (currentRotation >= 360.0) {
             currentRotation -= 360.0;
         }
+
+        // Set up our one light source and its colors.
+        gl.uniform4fv(lightPosition, [100, 0, -50, 1.0]);
+        gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
+        gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
         // Request the next frame.
         previousTimestamp = timestamp;
