@@ -108,31 +108,57 @@ Matrix.rotationMatrix = function (angle, x, y, z) {
     var matrix = new Matrix([
         [
             (x2 * oneMinusC) + c,
-            (xy * oneMinusC) + zs,
-            (xz * oneMinusC) - ys,
-            0.0
-        ],
-
-        [
             (xy * oneMinusC) - zs,
-            (y2 * oneMinusC) + c,
-            (yz * oneMinusC) + xs,
+            (xz * oneMinusC) + ys,
             0.0
         ],
-
         [
-            (xz * oneMinusC) + ys,
+            (xy * oneMinusC) + zs,
+            (y2 * oneMinusC) + c,
             (yz * oneMinusC) - xs,
+            0.0
+        ],
+        [
+            (xz * oneMinusC) - ys,
+            (yz * oneMinusC) + xs,
             (z2 * oneMinusC) + c,
             0.0
         ],
-
         [
             0.0,
             0.0,
             0.0,
             1.0
         ]
+
+
+        // [
+        //     (x2 * oneMinusC) + c,
+        //     (xy * oneMinusC) + zs,
+        //     (xz * oneMinusC) - ys,
+        //     0.0
+        // ],
+
+        // [
+        //     (xy * oneMinusC) - zs,
+        //     (y2 * oneMinusC) + c,
+        //     (yz * oneMinusC) + xs,
+        //     0.0
+        // ],
+
+        // [
+        //     (xz * oneMinusC) + ys,
+        //     (yz * oneMinusC) - xs,
+        //     (z2 * oneMinusC) + c,
+        //     0.0
+        // ],
+
+        // [
+        //     0.0,
+        //     0.0,
+        //     0.0,
+        //     1.0
+        // ]
     ]);
     // console.log(matrix);
     return matrix;
@@ -170,10 +196,32 @@ Matrix.perspMatrix = function (l, r, b, t, n, f) {
     ]);
 };
 
+Matrix.cameraMatrix = function (px, py, pz, qx, qy, qz, ux, uy, uz) {
+
+    var camPos = new Vector(px, py, pz);
+    var camLoc = new Vector(qx, qy, qz);
+    var northV = new Vector(ux, uy, uz);
+
+    var newZ = camPos.subtract(camLoc).unit();
+    var newY = northV.subtract(northV.projection(newZ)).unit();
+    var newX = newY.cross(newZ);
+
+    var camPosX = -1 * camPos.dot(newX);
+    var camPosY = -1 * camPos.dot(newY);
+    var camPosZ = -1 * camPos.dot(newZ);
+
+    return new Matrix([
+        [newX.x(), newX.y(), newX.z(), camPosX],
+        [newY.x(), newY.y(), newY.z(), camPosY],
+        [newZ.x(), newZ.y(), newZ.z(), camPosZ],
+        [0, 0, 0, 1]
+    ]);
+};
+
 Matrix.prototype.toGL = function () {
     var result = [];
-    for (var row = 0; row < this.matrix.length; row++) {
-        result = result.concat(this.row(row));
+    for (var column = 0; column < this.matrix.length; column++) {
+        result = result.concat(this.column(column));
     }
     return new Float32Array(result);
 };
