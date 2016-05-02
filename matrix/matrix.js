@@ -134,7 +134,7 @@ Matrix.rotationMatrix = function (angle, x, y, z) {
             1.0
         ]
     ]);
-    console.log(matrix);
+    // console.log(matrix);
     return matrix;
 };
 
