@@ -68,40 +68,43 @@
 
 
     objectsToDraw = [
-        // new Shape(ShapesLibrary.sphere({
-        //     color: { r: 0.0, g: 1.0, b: 0.0 },
-        //     mode: "LINES",
-        //     axis: { x: 1.0, y: 1.0, z: 1.0 }
-        // }, 1.4, 10, 10), library).addChild(
+        new Shape(ShapesLibrary.sphere({
+            color: { r: 0.0, g: 1.0, b: 0.0 },
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 20,
+            mode: "TRIANGLES",
+            axis: { x: 1.0, y: 1.0, z: 1.0 }
+        }, 1.4, 10, 10), library)
+        // .addChild(
         //     new Shape(ShapesLibrary.cube({
         //         color: { r: 0.0, g: 0.0, b: 1.0 },
         //         mode: "LINES",
         //     }), library)
         // ),
-        new Shape(ShapesLibrary.faultyPyramid({
-            color: { r: 1.0, g: 0.0, b: 0.0 },
-            mode: "LINES",
-            // axis: { x: 1.0, y: 1.0, z: 0.0 }
-        }), library).scale(1.0,-2.0,1.0).addChild(
-            new Shape(ShapesLibrary.pyramid({
-                color: { r: 1.0, g: 1.0, b: 0.0 },
-                mode: "LINES",
-                // axis: { x: 1.0, y: 1.0, z: 0.0 }
-            }), library).scale(2.0,2.0,2.0)
-        ).scale(2.0,2.0,2.0),
-        new Shape({
-            vertices: [
-                [ 3.0, 1.5, 0.0 ],
-                [ 2.0, -1.5, 0.0 ],
-                [ 4.0, -1.5, 0.0 ]
-            ],
-            indices: [
-                [ 0, 1, 2 ]
-            ],
-            color: { r: 1.0, g: 1.0, b: 0.0 },
-            mode: "TRIANGLES",
-            axis: { x: -0.5, y: 1.0, z: 0.0 }
-        }, library),
+        // new Shape(ShapesLibrary.faultyPyramid({
+        //     color: { r: 1.0, g: 0.0, b: 0.0 },
+        //     mode: "LINES",
+        //     // axis: { x: 1.0, y: 1.0, z: 0.0 }
+        // }), library).scale(1.0,-2.0,1.0).addChild(
+        //     new Shape(ShapesLibrary.pyramid({
+        //         color: { r: 1.0, g: 1.0, b: 0.0 },
+        //         mode: "LINES",
+        //         // axis: { x: 1.0, y: 1.0, z: 0.0 }
+        //     }), library).scale(2.0,2.0,2.0)
+        // ).scale(2.0,2.0,2.0),
+        // new Shape({
+        //     vertices: [
+        //         [ 3.0, 1.5, 0.0 ],
+        //         [ 2.0, -1.5, 0.0 ],
+        //         [ 4.0, -1.5, 0.0 ]
+        //     ],
+        //     indices: [
+        //         [ 0, 1, 2 ]
+        //     ],
+        //     color: { r: 1.0, g: 1.0, b: 0.0 },
+        //     mode: "TRIANGLES",
+        //     axis: { x: -0.5, y: 1.0, z: 0.0 }
+        // }, library),
     ];
 
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
@@ -169,13 +172,13 @@
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            objectsToDraw[i].save();
-            if (objectsToDraw[i].axis) {
+            // objectsToDraw[i].save();
+            // if (objectsToDraw[i].axis) {
 
-                objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
-            }
-            objectsToDraw[i].draw(vertexColor, modelViewMatrix, vertexPosition);
-            objectsToDraw[i].restore();
+            //     objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
+            // }
+            objectsToDraw[i].draw(vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition);
+            // objectsToDraw[i].restore();
         }
 
         // All done.
@@ -196,6 +199,11 @@
         -10,
         10
     ).toGL());
+
+    // Set up our one light source and its colors.
+    gl.uniform4fv(lightPosition, [500.0, 1000.0, 100.0, 1.0]);
+    gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
+    gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
     // Animation initialization/support.
     previousTimestamp = null;

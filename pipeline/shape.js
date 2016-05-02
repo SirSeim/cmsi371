@@ -10,6 +10,7 @@
         this.colors = spec.colors;
         this.axis = spec.axis;
         this.specularColor = spec.specularColor;
+        this.specularColors = spec.specularColors;
         this.shininess = spec.shininess;
         this.gl = libraries.gl;
         this.mode = spec.mode || "TRIANGLES";
@@ -89,9 +90,9 @@
 
             // Technically, the first value is not a vector, but v can stand for vertex
             // anyway, so...
-            var v0 = new Vector(p0[0], p0[1], p0[2]);
-            var v1 = new Vector(p1[0], p1[1], p1[2]).subtract(v0);
-            var v2 = new Vector(p2[0], p2[1], p2[2]).subtract(v0);
+            var v0 = new this.VectorClass(p0[0], p0[1], p0[2]);
+            var v1 = new this.VectorClass(p1[0], p1[1], p1[2]).subtract(v0);
+            var v2 = new this.VectorClass(p2[0], p2[1], p2[2]).subtract(v0);
             var normal = v1.cross(v2).unit();
 
             // We then use this same normal for every vertex in this face.
@@ -113,7 +114,7 @@
             // For each vertex in that face...
             for (var j = 0, maxj = this.indices[i].length; j < maxj; j += 1) {
                 var p = this.vertices[this.indices[i][j]];
-                var normal = new Vector(p[0], p[1], p[2]).unit();
+                var normal = new this.VectorClass(p[0], p[1], p[2]).unit();
                 result = result.concat(
                     [ normal.x(), normal.y(), normal.z() ]
                 );
@@ -233,20 +234,31 @@
         if (this.mode == "TRIANGLES") {
             var vertices = this.toRawTriangleArray();
             var colors = this.toColorTriangleArray();
+            var specularColors = this.toSpecularTriangleArray();
+            var normals = this.toNormalArray();
             this.glmode = this.gl.TRIANGLES;
             this.size = this.toRawTriangleArray().length;
         } else if (this.mode == "LINES") {
             var vertices = this.toRawLineArray();
             var colors = this.toColorLineArray();
+            var specularColors = this.toSpecularLineArray();
+            var normals = this.toVertexNormalArray();
             this.glmode = this.gl.LINES;
             this.size = this.toRawLineArray().length;
         } else {
             console.error("no implemented draw mode found");
             return
         }
+
+        console.log(this.size);
+        console.log(vertices.length);
+        console.log(specularColors.length);
+        console.log(normals.length);
+
         this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, vertices);
         this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, colors);
         this.specularBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, specularColors);
+        this.normalBuffer = GLSLUtilities.initVertexBuffer(this.gl, normals);
 
         if (this.children) {
             for (var i = 0; i < this.children.length; i++) {
@@ -363,11 +375,13 @@
         var product = scale.multiply(rotate).multiply(translate);
         // console.log(product);
 
-        this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, product.toGL());
+        console.log((new this.MatrixClass()).toGL());
+        this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, (new this.MatrixClass()).toGL());
+        // this.gl.uniformMatrix4fv(modelViewMatrix, this.gl.FALSE, product.toGL());
 
         // Set the varying normal vectors.
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-        gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.normalBuffer);
+        this.gl.vertexAttribPointer(normalVector, 3, this.gl.FLOAT, false, 0, 0);
 
         // Set the varying vertex coordinates.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
