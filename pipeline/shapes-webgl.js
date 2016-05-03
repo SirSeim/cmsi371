@@ -20,15 +20,13 @@
 
     // Important state variables.
     var animationActive = false;
+    var movingActive = false;
     var currentRotation = 0.0;
     var currentInterval;
     var modelViewMatrix;
     var projectionMatrix;
     var vertexPosition;
     var vertexColor;
-
-    // An individual "draw object" function.
-    var drawObject;
 
     // The big "draw scene" function.
     var drawScene;
@@ -67,51 +65,23 @@
     };
 
 
-    objectsToDraw = [
-        new Shape(ShapesLibrary.sphere({
+    shape = new Shape(ShapesLibrary.sphere({
             color: { r: 0.0, g: 1.0, b: 0.0 },
             specularColor: { r: 1.0, g: 1.0, b: 1.0 },
             shininess: 0.5,
             mode: "TRIANGLES"
             // axis: { x: 1.0, y: 0.0, z: 0.0 }
-        }, 1.4, 15, 15), library)
-            .addChild(
-                new Shape(ShapesLibrary.cube({
-                    color: { r: 0.0, g: 0.0, b: 1.0 },
-                    specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-                    shininess: 50,
-                    mode: "TRIANGLES"
-                }), library).scale(3,1,3)
-            ),
-        // new Shape(ShapesLibrary.faultyPyramid({
-        //     color: { r: 1.0, g: 0.0, b: 0.0 },
-        //     mode: "LINES",
-        //     // axis: { x: 1.0, y: 1.0, z: 0.0 }
-        // }), library).scale(1.0,-2.0,1.0).addChild(
-        //     new Shape(ShapesLibrary.pyramid({
-        //         color: { r: 1.0, g: 1.0, b: 0.0 },
-        //         mode: "LINES",
-        //         // axis: { x: 1.0, y: 1.0, z: 0.0 }
-        //     }), library).scale(2.0,2.0,2.0)
-        // ).scale(2.0,2.0,2.0),
-        // new Shape({
-        //     vertices: [
-        //         [ 3.0, 1.5, 0.0 ],
-        //         [ 2.0, -1.5, 0.0 ],
-        //         [ 4.0, -1.5, 0.0 ]
-        //     ],
-        //     indices: [
-        //         [ 0, 1, 2 ]
-        //     ],
-        //     color: { r: 1.0, g: 1.0, b: 0.0 },
-        //     mode: "TRIANGLES",
-        //     axis: { x: -0.5, y: 1.0, z: 0.0 }
-        // }, library),
-    ];
+        }, 1.4, 5, 5), library)
+    .addChild(
+        new Shape(ShapesLibrary.cube({
+            color: { r: 0.0, g: 0.0, b: 1.0 },
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 50,
+            mode: "TRIANGLES"
+        }), library).scale(3,1,3).rotate(180, 0,1,0)
+    );
 
-    for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-        objectsToDraw[i].prepare();
-    }
+    shape.prepare();
 
     // Initialize the shaders.
     shaderProgram = GLSLUtilities.initSimpleShaderProgram(
@@ -174,15 +144,14 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Display the objects.
-        for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            objectsToDraw[i].save();
-            if (objectsToDraw[i].axis) {
+        shape.save();
+        // if (shape.axis) {
 
-                objectsToDraw[i].rotate(currentRotation, objectsToDraw[i].axis.x, objectsToDraw[i].axis.y, objectsToDraw[i].axis.z);
-            }
-            objectsToDraw[i].draw(vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition);
-            objectsToDraw[i].restore();
-        }
+        //     shape.rotate(currentRotation, shape.axis.x, shape.axis.y, shape.axis.z);
+        // }
+
+        shape.draw(vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition);
+        shape.restore();
 
         // All done.
         gl.flush();
@@ -203,9 +172,10 @@
         10
     ).toGL());
 
-    gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, Matrix.cameraMatrix(
+    var cMatrix = Matrix.cameraMatrix(
         -1, -5, 3, 1, 0, currentRotation, 0, 3, 2
-    ).toGL());
+    );
+    gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, cMatrix.toGL());
 
     // Set up our one light source and its colors.
     gl.uniform4fv(lightPosition, [100, 0, -50, 1.0]);
@@ -218,10 +188,12 @@
 
     // Animation initialization/support.
     var LAngle = 0;
+    var rotationAroundX = 0.0;
+    var rotationAroundY = 0.0;
     previousTimestamp = null;
     advanceScene = function (timestamp) {
         // Check if the user has turned things off.
-        if (!animationActive) {
+        if (!animationActive && !movingActive) {
             return;
         }
 
@@ -241,13 +213,17 @@
         }
 
         // All clear.
-        currentRotation += 0.033 * progress;
-        drawScene();
-        if (currentRotation >= 360.0) {
-            currentRotation -= 360.0;
+        if (animationActive) {
+            LAngle += 0.1;
+            currentRotation += 0.033 * progress;
+            if (currentRotation >= 360.0) {
+                currentRotation -= 360.0;
+            }
         }
-
-        LAngle += 0.1;
+        
+        var lookon = cMatrix.multiply(Matrix.rotationMatrix(rotationAroundX, 1,0,0));
+        lookon = lookon.multiply(Matrix.rotationMatrix(rotationAroundY, 0,1,0));
+        gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, lookon.toGL());
 
 
         // Set up our one light source and its colors.
@@ -255,6 +231,7 @@
         gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
         gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
+        drawScene();
         // Request the next frame.
         previousTimestamp = timestamp;
         window.requestAnimationFrame(advanceScene);
@@ -263,13 +240,43 @@
     // Draw the initial scene.
     drawScene();
 
-    // Set up the rotation toggle: clicking on the canvas does it.
-    $(canvas).click(function () {
-        animationActive = !animationActive;
-        if (animationActive) {
+    /*
+     * Performs rotation calculations.
+     */
+    var rotateScene = function (event) {
+        rotationAroundX = xRotationStart - yDragStart + event.clientY;
+        rotationAroundY = yRotationStart - xDragStart + event.clientX;
+        window.requestAnimationFrame(advanceScene);
+    };
+
+    $('#animate').click(function () {
+        var active = $(this).data('active');
+        if (active === "true") {
+            animationActive = false;
+            $(this).data('active', "false").text("Animate");
+        } else {
+            animationActive = true;
             previousTimestamp = null;
             window.requestAnimationFrame(advanceScene);
+            $(this).data('active', "true").text("Stop Animation");
         }
+    });
+
+    // Instead of animation, we do interaction: let the mouse control rotation.
+    var xDragStart;
+    var yDragStart;
+    var xRotationStart;
+    var yRotationStart;
+    $(canvas).mousedown(function (event) {
+        movingActive = true;
+        xDragStart = event.clientX;
+        yDragStart = event.clientY;
+        xRotationStart = rotationAroundX;
+        yRotationStart = rotationAroundY;
+        $(canvas).mousemove(rotateScene);
+    }).mouseup(function (event) {
+        movingActive = false;
+        $(canvas).unbind("mousemove");
     });
 
 }(document.getElementById("matrices-webgl")));
