@@ -15,7 +15,7 @@
         WebGL wiki page</a>.</p>
 
     <!-- Note the rectangular canvas now. -->
-    <canvas id="matrices-webgl" width="1024" height="512">
+    <canvas id="matrices-webgl" width="1280" height="720">
       Sorry, your web browser does not appear to support
       the <code>canvas</code> element, either.
     </canvas>
@@ -54,6 +54,7 @@
       uniform mat4 modelViewMatrix;
       uniform mat4 xRotationMatrix;
       uniform mat4 yRotationMatrix;
+      uniform mat4 cameraMatrix;
 
       // We don't calculate color in the vertex shader anymore.  Instead,
       // we will pass on information that will affect the color later.
@@ -85,7 +86,7 @@
           // We now defer all color calculations to the fragment shader.
           fragmentDiffuseColor = vertexDiffuseColor;
           fragmentSpecularColor = vertexSpecularColor;
-          gl_Position = projectionMatrix *
+          gl_Position = projectionMatrix * cameraMatrix *
 //                  xRotationMatrix * yRotationMatrix *
                   modelViewMatrix * vec4(vertexPosition, 1.0);
       }

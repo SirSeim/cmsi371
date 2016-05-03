@@ -158,6 +158,7 @@
     var xRotationMatrix = gl.getUniformLocation(shaderProgram, "xRotationMatrix");
     var yRotationMatrix = gl.getUniformLocation(shaderProgram, "yRotationMatrix");
     var projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+    var cameraMatrix = gl.getUniformLocation(shaderProgram, "cameraMatrix");
 
     // Note the additional variables.
     var lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
@@ -200,6 +201,10 @@
         2,
         -10,
         10
+    ).toGL());
+
+    gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, Matrix.cameraMatrix(
+        1, 5, 3, 1, 0, currentRotation, 0, 3, 2
     ).toGL());
 
     // Set up our one light source and its colors.
