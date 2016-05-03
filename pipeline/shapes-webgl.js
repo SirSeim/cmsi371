@@ -27,6 +27,7 @@
     var projectionMatrix;
     var vertexPosition;
     var vertexColor;
+    var state = {};
 
     // The big "draw scene" function.
     var drawScene;
@@ -64,21 +65,22 @@
         VectorClass: Vector
     };
 
-
-    shape = new Shape(ShapesLibrary.sphere({
+    shape = new Shape(ShapesLibrary.cube({
+            color: { r: 0.0, g: 0.0, b: 1.0 },
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 50,
+            mode: "TRIANGLES"
+        }), library).scale(3,1,3)
+    .addChild(
+        new Shape(ShapesLibrary.sphere({
             color: { r: 0.0, g: 1.0, b: 0.0 },
             specularColor: { r: 1.0, g: 1.0, b: 1.0 },
             shininess: 0.5,
             mode: "TRIANGLES"
             // axis: { x: 1.0, y: 0.0, z: 0.0 }
-        }, 1.4, 15, 15), library)
-    .addChild(
-        new Shape(ShapesLibrary.cube({
-            color: { r: 0.0, g: 0.0, b: 1.0 },
-            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
-            shininess: 50,
-            mode: "TRIANGLES"
-        }), library).scale(3,1,3).rotate(180, 0,1,0)
+        }, 1.4, 15, 15), library).scale(0.3,1,0.3).rotate(180,0,1,0).animation(function (object) {
+            object.rotate(currentRotation, 1,0,0);
+        })
     )
     .addChild(
         new Shape(ShapesLibrary.faultyPyramid({
@@ -86,7 +88,7 @@
             specularColor: { r: 1.0, g: 1.0, b: 1.0 },
             shininess: 50,
             mode: "TRIANGLES"
-        }), library).translate(-0.25,0.75,0.25).rotate(90,1,0,0).scale(2,2,2)
+        }), library).scale(0.3,1,0.3).translate(-0.25,0.83,0.25).rotate(90,1,0,0).scale(2,2,2)
     )
     .addChild(
         new Shape(ShapesLibrary.faultyPyramid({
@@ -94,8 +96,41 @@
             specularColor: { r: 1.0, g: 1.0, b: 1.0 },
             shininess: 50,
             mode: "TRIANGLES"
-        }),library).translate(-0.25,0.75,0.25).rotate(-270,1,0,0).scale(2,2,-2)
+        }),library).scale(0.3,1,0.3).translate(-0.25,0.83,0.25).rotate(-270,1,0,0).scale(2,2,-2)
     );
+
+
+    // shape = new Shape(ShapesLibrary.sphere({
+    //         color: { r: 0.0, g: 1.0, b: 0.0 },
+    //         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+    //         shininess: 0.5,
+    //         mode: "TRIANGLES"
+    //         // axis: { x: 1.0, y: 0.0, z: 0.0 }
+    //     }, 1.4, 15, 15), library)
+    // .addChild(
+    //     new Shape(ShapesLibrary.cube({
+    //         color: { r: 0.0, g: 0.0, b: 1.0 },
+    //         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+    //         shininess: 50,
+    //         mode: "TRIANGLES"
+    //     }), library).scale(3,1,3).rotate(180, 0,1,0)
+    // )
+    // .addChild(
+    //     new Shape(ShapesLibrary.faultyPyramid({
+    //         color: { r: 1.0, g: 0.5, b: 0.5 },
+    //         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+    //         shininess: 50,
+    //         mode: "TRIANGLES"
+    //     }), library).translate(-0.25,0.75,0.25).rotate(90,1,0,0).scale(2,2,2)
+    // )
+    // .addChild(
+    //     new Shape(ShapesLibrary.faultyPyramid({
+    //         color: { r: 1.0, g: 0.5, b: 0.5 },
+    //         specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+    //         shininess: 50,
+    //         mode: "TRIANGLES"
+    //     }),library).translate(-0.25,0.75,0.25).rotate(-270,1,0,0).scale(2,2,-2)
+    // );
 
     shape.prepare();
 
