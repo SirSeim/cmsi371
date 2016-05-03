@@ -71,7 +71,7 @@
             shininess: 0.5,
             mode: "TRIANGLES"
             // axis: { x: 1.0, y: 0.0, z: 0.0 }
-        }, 1.4, 5, 5), library)
+        }, 1.4, 15, 15), library)
     .addChild(
         new Shape(ShapesLibrary.cube({
             color: { r: 0.0, g: 0.0, b: 1.0 },
@@ -79,6 +79,22 @@
             shininess: 50,
             mode: "TRIANGLES"
         }), library).scale(3,1,3).rotate(180, 0,1,0)
+    )
+    .addChild(
+        new Shape(ShapesLibrary.faultyPyramid({
+            color: { r: 1.0, g: 0.5, b: 0.5 },
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 50,
+            mode: "TRIANGLES"
+        }), library).translate(-0.25,0.75,0.25).rotate(90,1,0,0).scale(2,2,2)
+    )
+    .addChild(
+        new Shape(ShapesLibrary.faultyPyramid({
+            color: { r: 1.0, g: 0.5, b: 0.5 },
+            specularColor: { r: 1.0, g: 1.0, b: 1.0 },
+            shininess: 50,
+            mode: "TRIANGLES"
+        }),library).translate(-0.25,0.75,0.25).rotate(-270,1,0,0).scale(2,2,-2)
     );
 
     shape.prepare();
@@ -177,19 +193,19 @@
     );
     gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, cMatrix.toGL());
 
-    // Set up our one light source and its colors.
-    gl.uniform4fv(lightPosition, [100, 0, -50, 1.0]);
-    gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
-    gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
-
-    var rotationlight = function (angle) {
-        return [Math.sin(angle), 0, Math.cos(angle), 1];
-    };
-
-    // Animation initialization/support.
     var LAngle = 0;
     var rotationAroundX = 0.0;
     var rotationAroundY = 0.0;
+    var rotationlight = function (angle) {
+        return [Math.sin(angle), 1, Math.cos(angle), 1];
+    };
+
+    // Set up our one light source and its colors.
+    gl.uniform4fv(lightPosition, rotationlight(LAngle));
+    gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
+    gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
+
+    // Animation initialization/support.
     previousTimestamp = null;
     advanceScene = function (timestamp) {
         // Check if the user has turned things off.
