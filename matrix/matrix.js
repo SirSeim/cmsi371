@@ -11,6 +11,10 @@ var Matrix = function (matrix) {
     }
 };
 
+Matrix.state = {
+    NaNreport: 0
+};
+
 Matrix.prototype.column = function (num) {
     var result = [];
     for (var i = 0; i < this.matrix.length; i++) {
@@ -161,6 +165,13 @@ Matrix.rotationMatrix = function (angle, x, y, z) {
         // ]
     ]);
     // console.log(matrix);
+    if (matrix.containsNaN()) {
+        if (Matrix.state.NaNreport < 20) {
+            console.warn("Rotation Matrix contains NaN");
+            Matrix.state.NaNreport++;
+        }
+        return new Matrix();
+    }
     return matrix;
 };
 
@@ -218,10 +229,31 @@ Matrix.cameraMatrix = function (px, py, pz, qx, qy, qz, ux, uy, uz) {
     ]);
 };
 
+Matrix.prototype.containsNaN = function () {
+    var cNaN = false;
+    for (var r = 0; r < this.matrix.length; r++) {
+        for (var c = 0; c < this.matrix[r].length; c++) {
+            if (isNaN(this.matrix[r][c])) {
+                cNaN = true;
+            }
+        }
+    }
+    return cNaN;
+}
+
 Matrix.prototype.toGL = function () {
     var result = [];
     for (var column = 0; column < this.matrix.length; column++) {
         result = result.concat(this.column(column));
+    }
+    var containsNaN = false;
+    for (var i = 0; i < result.length; i++) {
+        if (isNaN(result[i])) {
+            containsNaN = true;
+        }
+    }
+    if (containsNaN) {
+        return (new Matrix()).toGL();
     }
     return new Float32Array(result);
 };
