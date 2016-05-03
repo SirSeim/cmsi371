@@ -72,16 +72,16 @@
             color: { r: 0.0, g: 1.0, b: 0.0 },
             specularColor: { r: 1.0, g: 1.0, b: 1.0 },
             shininess: 0.5,
-            mode: "TRIANGLES",
-            axis: { x: 1.0, y: 0.0, z: 0.0 }
-        }, 1.4, 15, 15), library).translate(1.0,0.0,1.0)
+            mode: "TRIANGLES"
+            // axis: { x: 1.0, y: 0.0, z: 0.0 }
+        }, 1.4, 15, 15), library)
             .addChild(
                 new Shape(ShapesLibrary.cube({
                     color: { r: 0.0, g: 0.0, b: 1.0 },
                     specularColor: { r: 1.0, g: 1.0, b: 1.0 },
                     shininess: 50,
                     mode: "TRIANGLES"
-                }), library).scale(3,1,3).rotate(200,0,1,0).translate(-1,1,1)
+                }), library).scale(3,1,3)
             ),
         // new Shape(ShapesLibrary.faultyPyramid({
         //     color: { r: 1.0, g: 0.0, b: 0.0 },
@@ -204,7 +204,7 @@
     ).toGL());
 
     gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, Matrix.cameraMatrix(
-        1, 5, 3, 1, 0, currentRotation, 0, 3, 2
+        -1, -5, 3, 1, 0, currentRotation, 0, 3, 2
     ).toGL());
 
     // Set up our one light source and its colors.
@@ -212,7 +212,12 @@
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
     gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
+    var rotationlight = function (angle) {
+        return [Math.sin(angle), -1, Math.cos(angle), 1];
+    };
+
     // Animation initialization/support.
+    var LAngle = 0;
     previousTimestamp = null;
     advanceScene = function (timestamp) {
         // Check if the user has turned things off.
@@ -242,8 +247,11 @@
             currentRotation -= 360.0;
         }
 
+        LAngle += 0.1;
+
+
         // Set up our one light source and its colors.
-        gl.uniform4fv(lightPosition, [100, 0, -50, 1.0]);
+        gl.uniform4fv(lightPosition, rotationlight(LAngle));
         gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
         gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
