@@ -358,6 +358,12 @@
         return this;
     };
 
+    Shape.prototype.animation = function(f) {
+        this.animateFunction = f;
+
+        return this;
+    }
+
     Shape.prototype.draw = function (vertexDiffuseColor, vertexSpecularColor, shininess, modelViewMatrix, normalVector, vertexPosition) {
         // Set the varying colors.
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.colorBuffer);
@@ -377,6 +383,9 @@
         // specify the identity matrix.
         if (this.parent) {
             var parentMatrix = this.parent.product;
+        }
+        if (this.animateFunction) {
+            this.animateFunction(this);
         }
         var translate = this.MatrixClass.translateMatrix(this.transform.translate.x, this.transform.translate.y, this.transform.translate.z);
         var rotate = this.MatrixClass.rotationMatrix(this.transform.rotate.angle, this.transform.rotate.x, this.transform.rotate.y, this.transform.rotate.z);
