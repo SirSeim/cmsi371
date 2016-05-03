@@ -173,7 +173,7 @@
     ).toGL());
 
     var cMatrix = Matrix.cameraMatrix(
-        -1, -5, 3, 1, 0, currentRotation, 0, 3, 2
+        1, -1, 0, 0, 0, 0, 0, 0, 1
     );
     gl.uniformMatrix4fv(cameraMatrix, gl.FALSE, cMatrix.toGL());
 
@@ -183,7 +183,7 @@
     gl.uniform3fv(lightSpecular, [1.0, 1.0, 1.0]);
 
     var rotationlight = function (angle) {
-        return [Math.sin(angle), -1, Math.cos(angle), 1];
+        return [Math.sin(angle), 0, Math.cos(angle), 1];
     };
 
     // Animation initialization/support.
@@ -214,7 +214,7 @@
 
         // All clear.
         if (animationActive) {
-            LAngle += 0.1;
+            LAngle += 0.05;
             currentRotation += 0.033 * progress;
             if (currentRotation >= 360.0) {
                 currentRotation -= 360.0;
