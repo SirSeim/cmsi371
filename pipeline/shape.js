@@ -250,11 +250,6 @@
             return
         }
 
-        console.log(this.size);
-        console.log(vertices.length);
-        console.log(specularColors.length);
-        console.log(normals.length);
-
         this.buffer = this.GLSLUtilities.initVertexBuffer(this.gl, vertices);
         this.colorBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, colors);
         this.specularBuffer = this.GLSLUtilities.initVertexBuffer(this.gl, specularColors);
